@@ -27,7 +27,7 @@ router.post('/student/signup', async (req, res) => {
         console.log('This is status of student',newStudent)
         try{
             await newStudent.save()
-        }catch(e){
+        }catch(e:any){
             res.status(400).send({error : e.errors})
         }
         
