@@ -7,9 +7,6 @@ import mongoose from "mongoose"
 import validator from "validator"
 const Schema = mongoose.Schema;
 
-
-const url = 'mongodb://localhost:27017'
-const client = mongoose.createConnection(url+'/Collage-ERP')
 /**
  * @description studentSchema that contain property
  * @param name:String   -contain name of the student     property-required
@@ -25,7 +22,7 @@ var studentSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        validate: function (value) {
+        validate: function (value:string) {
             if (value == null) {
                 throw new Error('Name is required');
             }
@@ -35,7 +32,7 @@ var studentSchema = new Schema({
         type: String,
         require: true,
         unique: true,
-        validate: function (value) {
+        validate: function (value:string) {
             if (!validator.isEmail(value)) {
                 throw new Error('Email is invalid');
             }
@@ -44,7 +41,7 @@ var studentSchema = new Schema({
     currentSem: {
         type: Number,
         default: 0,
-        validate: function (value) {
+        validate: function (value:number) {
             if (value < 0 && value >= 8) {
                 throw new Error('This current Sem is not available');
             }
@@ -54,7 +51,7 @@ var studentSchema = new Schema({
         type: String,
         require: true,
         minlength: 7,
-        validate: function (value) {
+        validate: function (value:string) {
             value = value.trim();
             if (value.toLowerCase() == 'password') {
                 throw new Error('Password must not contain string "password"');
@@ -63,7 +60,7 @@ var studentSchema = new Schema({
     },
     phoneNumber: {
         type: String,
-        validate: function (value) {
+        validate: function (value:string) {
             if (value.length != 10) {
                 throw new Error('Please insert right phoneNumber');
             }
@@ -72,7 +69,7 @@ var studentSchema = new Schema({
     department: {
         type: String,
         require: true,
-        validate: function (value) {
+        validate: function (value:string) {
             var Branch = ['CE', 'ME', 'EC'];
             if (!Branch.includes(value)) {
                 throw new Error('Branch must in CE, ME and EC');
@@ -82,7 +79,7 @@ var studentSchema = new Schema({
     batch: {
         type: Number,
         require: true,
-        validate: function (value) {
+        validate: function (value:number) {
             if (value < 2000 || value > 3000) {
                 throw new Error('Enter valid batch');
             }

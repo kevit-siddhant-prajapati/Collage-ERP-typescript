@@ -1,13 +1,12 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @description this file contains studentSchema
 */
 // Object.defineProperty(exports, "__esModule", { value: true });
-var mongoose = require('mongoose');
-var validator = require("validator");
-var Schema = mongoose.Schema;
-var url = 'mongodb://localhost:27017';
-var client = mongoose.createConnection(url + '/Collage-ERP');
+var mongoose_1 = require("mongoose");
+var validator_1 = require("validator");
+var Schema = mongoose_1.default.Schema;
 /**
  * @description studentSchema that contain property
  * @param name:String   -contain name of the student     property-required
@@ -34,7 +33,7 @@ var studentSchema = new Schema({
         require: true,
         unique: true,
         validate: function (value) {
-            if (!validator.isEmail(value)) {
+            if (!validator_1.default.isEmail(value)) {
                 throw new Error('Email is invalid');
             }
         }
@@ -91,5 +90,5 @@ var studentSchema = new Schema({
         require: true
     }
 });
-var Student = mongoose.model('Student', studentSchema);
+var Student = mongoose_1.default.model('Student', studentSchema);
 module.exports = Student;

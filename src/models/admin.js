@@ -1,11 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
- * @description this file contains staffSchema
+ * @description this file contains adminSchema and model of admin
 */
-var mongoose_1 = require("mongoose");
+var mongoose = require('mongoose');
 var validator = require('validator');
-var Schema = mongoose_1.default.Schema;
+var Schema = mongoose.Schema;
 /**
  * @description staffSchema that contain property
  * @param name:String   -contain name of the staff     property-required
@@ -14,7 +12,7 @@ var Schema = mongoose_1.default.Schema;
  * @param attendence:number value-total number of attendence
  * @param email:string         property-required
 */
-var staffSchema = new Schema({
+var adminSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -53,21 +51,7 @@ var staffSchema = new Schema({
                 throw new Error('Please insert right phoneNumber');
             }
         }
-    },
-    department: {
-        type: String,
-        require: true,
-        validate: function (value) {
-            var Branch = ['CE', 'ME', 'EC'];
-            if (!Branch.includes(value)) {
-                throw new Error('Branch must in CE, ME and EC');
-            }
-        }
-    },
-    attendance: {
-        type: Number,
-        require: true
     }
 });
-var Staff = mongoose_1.default.model('Staff', staffSchema);
-module.exports = Staff;
+var Admin = mongoose.model('Admin', adminSchema);
+module.exports = Admin;

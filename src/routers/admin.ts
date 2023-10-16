@@ -1,7 +1,7 @@
 /**
  * @description this file contains router for admin
  */
-import express from 'express'
+import * as express from 'express'
 import mongoose from 'mongoose';
 //const express = require('express');
 const Admin = require('../models/admin');
