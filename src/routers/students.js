@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -34,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @description this routers/students.js file contains routers students
  *  This file import Student models and perform CRUD operation on it
@@ -42,51 +43,57 @@ var _this = this;
 var express = require('express');
 var Student = require('../models/students');
 var router = express.Router();
+var bcrypt = require("bcrypt");
 /**
  * @description this router create new Student
  * it takes student object from postman and it to database
  */
-router.post('/student/signup', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var _a, name_1, email, currentSem, password, phoneNumber, department, batch, attendance, newStudent, e_1, err_1;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+router.post('/student/signup', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, name_1, email, currentSem, password, phoneNumber, department, batch, attendance, newStudent, _b, e_1, err_1;
+    var _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
             case 0:
-                _b.trys.push([0, 5, , 6]);
+                _d.trys.push([0, 6, , 7]);
                 _a = req.body, name_1 = _a.name, email = _a.email, currentSem = _a.currentSem, password = _a.password, phoneNumber = _a.phoneNumber, department = _a.department, batch = _a.batch, attendance = _a.attendance;
-                newStudent = new Student({
+                _b = Student.bind;
+                _c = {
                     name: name_1,
                     email: email,
-                    currentSem: currentSem,
-                    password: password,
-                    phoneNumber: phoneNumber,
-                    department: department,
-                    batch: batch,
-                    attendance: attendance
-                });
-                console.log('This is status of student', newStudent);
-                _b.label = 1;
+                    currentSem: currentSem
+                };
+                return [4 /*yield*/, bcrypt.hash(password, 8)];
             case 1:
-                _b.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, newStudent.save()];
+                newStudent = new (_b.apply(Student, [void 0, (_c.password = _d.sent(),
+                        _c.phoneNumber = phoneNumber,
+                        _c.department = department,
+                        _c.batch = batch,
+                        _c.attendance = attendance,
+                        _c)]))();
+                console.log('This is status of student', newStudent);
+                _d.label = 2;
             case 2:
-                _b.sent();
-                return [3 /*break*/, 4];
+                _d.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, newStudent.save()];
             case 3:
-                e_1 = _b.sent();
-                res.status(400).send({ error: e_1.errors });
-                return [3 /*break*/, 4];
+                _d.sent();
+                return [3 /*break*/, 5];
             case 4:
+                e_1 = _d.sent();
+                res.status(400).send({ error: e_1.errors });
+                return [3 /*break*/, 5];
+            case 5:
                 // Respond with a 201 Created status code and the created student
                 res.status(201).send(newStudent);
-                return [3 /*break*/, 6];
-            case 5:
-                err_1 = _b.sent();
+                return [3 /*break*/, 7];
+            case 6:
+                err_1 = _d.sent();
                 // Log the error for debugging purposes
                 console.log(err_1);
                 // Respond with a 500 Internal Server Error status code
                 res.status(500).send({ error: 'Internal Server Error' });
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/];
         }
     });
 }); });
@@ -94,7 +101,7 @@ router.post('/student/signup', function (req, res) { return __awaiter(_this, voi
  * @description this router is used for checking profile of login student
  * according to json web token it take profile of logged student
 */
-router.get('/student/me/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.get('/student/me/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var student;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -112,7 +119,7 @@ router.get('/student/me/:id', function (req, res) { return __awaiter(_this, void
 /**
  * @description below given router show data of all students
 */
-router.get('/students', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.get('/students', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var student;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -131,7 +138,7 @@ router.get('/students', function (req, res) { return __awaiter(_this, void 0, vo
  * @description below given router is useful to update details of logged student
  * it takes json object from postman and update student
 */
-router.patch('/student/me/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.patch('/student/me/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var updatable, updateStudent, isValidUpdate, student_1, e_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -169,7 +176,7 @@ router.patch('/student/me/:id', function (req, res) { return __awaiter(_this, vo
 /**
  * @description This below router delete the logged Student
 */
-router.delete('/student/me/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.delete('/student/me/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var student, e_3;
     return __generator(this, function (_a) {
         switch (_a.label) {

@@ -5,6 +5,7 @@
 const express = require('express');
 const Student = require('../models/students');
 const router = express.Router()
+import * as bcrypt from "bcrypt";
 
 /**
  * @description this router create new Student
@@ -18,7 +19,7 @@ router.post('/student/signup', async (req, res) => {
             name,
             email,
             currentSem,
-            password,
+            password ,
             phoneNumber,
             department,
             batch,
@@ -31,6 +32,7 @@ router.post('/student/signup', async (req, res) => {
             res.status(400).send({error : e.errors})
         }
         
+
         // Respond with a 201 Created status code and the created student
         res.status(201).send(newStudent);
     } catch (err) {
@@ -41,6 +43,8 @@ router.post('/student/signup', async (req, res) => {
         res.status(500).send({ error: 'Internal Server Error' });
     }
 });
+
+
 
 /**
  * @description this router is used for checking profile of login student

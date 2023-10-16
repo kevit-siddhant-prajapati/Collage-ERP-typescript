@@ -44,12 +44,12 @@ var express = require("express");
 var Admin = require('../models/admin');
 var router = express.Router();
 router.post('/admin/signup', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, name_1, email, password, phoneNumber, department, attendance, newAdmin, e_1, err_1;
+    var _a, name_1, email, password, newAdmin, e_1, err_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _b.trys.push([0, 5, , 6]);
-                _a = req.body, name_1 = _a.name, email = _a.email, password = _a.password, phoneNumber = _a.phoneNumber, department = _a.department, attendance = _a.attendance;
+                _a = req.body, name_1 = _a.name, email = _a.email, password = _a.password;
                 newAdmin = new Admin({
                     name: name_1,
                     email: email,
@@ -100,7 +100,7 @@ router.get('/admin/me/:id', function (req, res) { return __awaiter(void 0, void 
 /**
  * @describe this get method show all staff that are present in the database
 */
-router.get('/admin/login', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.get('/admins', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var admin;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -112,6 +112,75 @@ router.get('/admin/login', function (req, res) { return __awaiter(void 0, void 0
                 }
                 res.send(admin);
                 return [2 /*return*/];
+        }
+    });
+}); });
+/**
+ * @description below given router is useful to update details of logged student
+ * it takes json object from postman and update student
+*/
+router.patch('/admin/me/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var updatable, updateAdmin, isValidUpdate, admin_1, e_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                updatable = ['name', 'email', 'password'];
+                updateAdmin = Object.keys(req.body);
+                isValidUpdate = updateAdmin.every(function (update) { return updatable.includes(update); });
+                if (!isValidUpdate) {
+                    return [2 /*return*/, res.status(400).send('Not valid update')];
+                }
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, Admin.findById(req.params.id)];
+            case 2:
+                admin_1 = _a.sent();
+                if (!admin_1) {
+                    return [2 /*return*/, res.status(404).send('This type of Student not found')];
+                }
+                updateAdmin.forEach(function (update) {
+                    admin_1[update] = req.body[update];
+                });
+                return [4 /*yield*/, admin_1.save()];
+            case 3:
+                _a.sent();
+                res.send(admin_1);
+                return [3 /*break*/, 5];
+            case 4:
+                e_2 = _a.sent();
+                return [2 /*return*/, res.status(400).send(e_2)];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); });
+/**
+ * @description This below router delete the logged Student
+*/
+router.delete('/admin/me/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var admin, e_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, Admin.findById(req.params.id)];
+            case 1:
+                admin = _a.sent();
+                console.log(req.params.id);
+                console.log(admin);
+                if (!admin) {
+                    return [2 /*return*/, res.status(404).send('Given Student is not exist.')];
+                }
+                return [4 /*yield*/, Admin.deleteOne({ _id: admin._id })];
+            case 2:
+                _a.sent();
+                res.send(admin);
+                return [3 /*break*/, 4];
+            case 3:
+                e_3 = _a.sent();
+                res.status(500).send('Something went wrong :( ');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });

@@ -6,7 +6,7 @@
 import mongoose from "mongoose"
 import validator from "validator"
 const Schema = mongoose.Schema;
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt";
 /**
  * @description studentSchema that contain property
  * @param name:String   -contain name of the student     property-required
@@ -51,11 +51,12 @@ var studentSchema = new Schema({
         type: String,
         require: true,
         minlength: 7,
-        validate: function (value:string) {
+        validate: async function (value:string) {
             value = value.trim();
             if (value.toLowerCase() == 'password') {
                 throw new Error('Password must not contain string "password"');
             }
+            //value = await bcrypt.hash(value, 8)
         }
     },
     phoneNumber: {
@@ -91,15 +92,19 @@ var studentSchema = new Schema({
     }
 });
 
-studentSchema.pre('save', async function(next) {
-    const student = this
-
-    if(student.isModified('password')){
-        const hashedpassword = await bcrypt.hash(student.password, 8)
-        student.password = hashedpassword
+studentSchema.pre('save', async function (next) {
+    const student = this;
+    try {
+        if (student.isModified('password')) {
+            const hashedpassword = await bcrypt.hash(student.password, 8);
+            student.password = hashedpassword.toString();
+        }
+        next();
+    } catch (error) {
+        next(error);
     }
-    next()
-})
+});
+
 
 const Student = mongoose.model('Student', studentSchema);
 module.exports = Student;

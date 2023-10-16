@@ -43,7 +43,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var validator_1 = require("validator");
 var Schema = mongoose_1.default.Schema;
-var bcrypt_1 = require("bcrypt");
 /**
  * @description studentSchema that contain property
  * @param name:String   -contain name of the student     property-required
@@ -89,10 +88,15 @@ var studentSchema = new Schema({
         require: true,
         minlength: 7,
         validate: function (value) {
-            value = value.trim();
-            if (value.toLowerCase() == 'password') {
-                throw new Error('Password must not contain string "password"');
-            }
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    value = value.trim();
+                    if (value.toLowerCase() == 'password') {
+                        throw new Error('Password must not contain string "password"');
+                    }
+                    return [2 /*return*/];
+                });
+            });
         }
     },
     phoneNumber: {
@@ -127,25 +131,17 @@ var studentSchema = new Schema({
         require: true
     }
 });
-studentSchema.pre('save', function (next) {
-    return __awaiter(this, void 0, void 0, function () {
-        var student, hashedpassword;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    student = this;
-                    if (!student.isModified('password')) return [3 /*break*/, 2];
-                    return [4 /*yield*/, bcrypt_1.default.hash(student.password, 8)];
-                case 1:
-                    hashedpassword = _a.sent();
-                    student.password = hashedpassword;
-                    _a.label = 2;
-                case 2:
-                    next();
-                    return [2 /*return*/];
-            }
-        });
-    });
-});
+// studentSchema.pre('save', async function (next) {
+//     const student = this;
+//     try {
+//         if (student.isModified('password')) {
+//             const hashedpassword = await bcrypt.hash(student.password, 8);
+//             student.password = hashedpassword.toString();
+//         }
+//         next();
+//     } catch (error) {
+//         next(error);
+//     }
+// });
 var Student = mongoose_1.default.model('Student', studentSchema);
 module.exports = Student;

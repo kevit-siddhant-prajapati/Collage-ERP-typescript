@@ -12,7 +12,7 @@ const router = express.Router()
 router.post('/admin/signup', async (req, res) => {
     try {
         // Validate request data here if needed
-        const {name, email, password, phoneNumber, department, attendance} = req.body;
+        const {name, email, password} = req.body;
         const newAdmin = new Admin({
             name,
             email,
@@ -48,7 +48,7 @@ router.get('/admin/me/:id', async (req, res) => {
 /** 
  * @describe this get method show all staff that are present in the database
 */
-router.get('/admin/login', async (req, res) => {
+router.get('/admins', async (req, res) => {
     //console.log(req.params.id)
     const admin = await Admin.find({})
     if(!admin){
@@ -56,6 +56,53 @@ router.get('/admin/login', async (req, res) => {
     }
     res.send(admin)    
 })
+
+
+
+/**
+ * @description below given router is useful to update details of logged student
+ * it takes json object from postman and update student
+*/
+router.patch('/admin/me/:id', async (req, res) => {
+    const updatable = ['name', 'email', 'password']
+    const updateAdmin = Object.keys(req.body)
+    const isValidUpdate = updateAdmin.every(update => updatable.includes(update))
+    if(!isValidUpdate){
+        return res.status(400).send('Not valid update')
+    }
+    try {
+        const admin = await Admin.findById(req.params.id)
+        if(!admin){
+            return res.status(404).send('This type of Student not found')
+        }
+        updateAdmin.forEach(update => {
+            admin[update] = req.body[update] 
+        })
+        await admin.save()
+        res.send(admin)
+    } catch( e ){
+        return res.status(400).send(e)
+    }
+})
+
+/**
+ * @description This below router delete the logged Student
+*/
+router.delete('/admin/me/:id', async(req, res)=>{
+    try {
+        const admin = await Admin.findById(req.params.id)
+        console.log(req.params.id)
+        console.log(admin)
+        if(!admin){
+            return res.status(404).send('Given Student is not exist.')
+        }
+        await Admin.deleteOne({_id : admin._id})
+        res.send(admin)
+    } catch ( e ){
+        res.status(500).send('Something went wrong :( ')
+    }
+})
+
 
 /** 
  * @description this require method import database.js file 
