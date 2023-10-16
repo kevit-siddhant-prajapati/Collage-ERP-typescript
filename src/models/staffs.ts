@@ -1,8 +1,9 @@
 /** 
  * @description this file contains staffSchema
 */
+import mongoose  from "mongoose";
+import express from "express";
 
-const mongoose = require('mongoose');
 const validator = require('validator');
 const Schema = mongoose.Schema;
 

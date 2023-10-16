@@ -3,8 +3,8 @@
  * @description this file contains studentSchema
 */
 // Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose = require('mongoose')
-const validator = require("validator");
+import mongoose from "mongoose"
+import validator from "validator"
 const Schema = mongoose.Schema;
 
 

@@ -41,12 +41,20 @@ var _this = this;
 var express = require('express');
 var Student = require('../models/students');
 var router = express.Router();
-router.post('/students', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+/**
+ * @description this router use to create new user
+ *  method-post
+ *  @param req : this pass data of
+ */
+router.post('/student/signup', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var _a, name_1, email, currentSem, password, phoneNumber, department, batch, attendance, newStudent, e_1, err_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                _b.trys.push([0, 5, , 6]);
+                console.log('New student created');
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 6, , 7]);
                 _a = req.body, name_1 = _a.name, email = _a.email, currentSem = _a.currentSem, password = _a.password, phoneNumber = _a.phoneNumber, department = _a.department, batch = _a.batch, attendance = _a.attendance;
                 newStudent = new Student({
                     name: name_1,
@@ -59,29 +67,29 @@ router.post('/students', function (req, res) { return __awaiter(_this, void 0, v
                     attendance: attendance
                 });
                 console.log('This is status of student', newStudent);
-                _b.label = 1;
-            case 1:
-                _b.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, newStudent.save()];
+                _b.label = 2;
             case 2:
-                _b.sent();
-                return [3 /*break*/, 4];
+                _b.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, newStudent.save()];
             case 3:
+                _b.sent();
+                return [3 /*break*/, 5];
+            case 4:
                 e_1 = _b.sent();
                 res.status(400).send({ error: e_1.errors });
-                return [3 /*break*/, 4];
-            case 4:
+                return [3 /*break*/, 5];
+            case 5:
                 // Respond with a 201 Created status code and the created student
                 res.status(201).send(newStudent);
-                return [3 /*break*/, 6];
-            case 5:
+                return [3 /*break*/, 7];
+            case 6:
                 err_1 = _b.sent();
                 // Log the error for debugging purposes
                 console.log(err_1);
                 // Respond with a 500 Internal Server Error status code
                 res.status(500).send({ error: 'Internal Server Error' });
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/];
         }
     });
 }); });
@@ -89,7 +97,10 @@ router.get('/student/me/:id', function (req, res) { return __awaiter(_this, void
     var student;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Student.find({ _id: req.params.id })];
+            case 0:
+                //console.log(req.params.id)
+                console.log('find new Student');
+                return [4 /*yield*/, Student.find({ _id: req.params.id })];
             case 1:
                 student = _a.sent();
                 if (!student) {
@@ -100,11 +111,14 @@ router.get('/student/me/:id', function (req, res) { return __awaiter(_this, void
         }
     });
 }); });
-router.get('/student', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.get('/students', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var student;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Student.find({})];
+            case 0:
+                //console.log(req.params.id)
+                console.log('find all students');
+                return [4 /*yield*/, Student.find({})];
             case 1:
                 student = _a.sent();
                 if (!student) {
@@ -115,7 +129,7 @@ router.get('/student', function (req, res) { return __awaiter(_this, void 0, voi
         }
     });
 }); });
-router.patch('/student/me', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.patch('/student/update', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/];
     });
@@ -124,6 +138,7 @@ router.patch('/student/me', function (req, res) { return __awaiter(_this, void 0
  * @description this require method import database.js file
 */
 require('../../bin/database');
+console.log('Connect with student router');
 /**
  * @description responsible for running code on the server
 */

@@ -38,10 +38,10 @@ var _this = this;
 /**
  * @description this routers/students.js file contains routers students
  */
-var express = require('express');
+var express = require("express");
 var Staff = require('../models/staffs');
 var router = express.Router();
-router.post('/staffs', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.post('/staff/signup', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var _a, name_1, email, password, phoneNumber, department, attendance, newStaff, e_1, err_1;
     return __generator(this, function (_b) {
         switch (_b.label) {

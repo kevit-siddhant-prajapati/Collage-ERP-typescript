@@ -1,13 +1,12 @@
 /**
  * @description this routers/students.js file contains routers students
  */
-const express = require('express');
+const express = require("express")
 const Staff = require('../models/staffs');
-
 const router = express.Router()
 
 
-router.post('/staffs', async (req, res) => {
+router.post('/staff/signup', async (req, res) => {
     try {
         // Validate request data here if needed
         const {name, email, password, phoneNumber, department, attendance} = req.body;

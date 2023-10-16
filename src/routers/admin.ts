@@ -1,7 +1,9 @@
 /**
  * @description this file contains router for admin
  */
-const express = require('express');
+import express from 'express'
+import mongoose from 'mongoose';
+//const express = require('express');
 const Admin = require('../models/admin');
 
 const router = express.Router()
@@ -34,7 +36,7 @@ router.post('/admin/signup', async (req, res) => {
     }
 });
 
-router.get('/admin/me', async (req, res) => {
+router.get('/admin/me/:id', async (req, res) => {
     //console.log(req.params.id)
     const admin = await Admin.find({_id : req.params.id})
     if(!admin){
