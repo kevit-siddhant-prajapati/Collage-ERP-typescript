@@ -117,6 +117,75 @@ router.get('/staffs', function (req, res) { return __awaiter(_this, void 0, void
     });
 }); });
 /**
+ * @description below given router is useful to update details of logged staff
+ * it takes json object from postman and update staff
+*/
+router.patch('/staff/me/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var updatable, updateStaff, isValidUpdate, staff_1, e_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                updatable = ['name', 'email', 'password', 'phoneNumber', 'department', 'attendance'];
+                updateStaff = Object.keys(req.body);
+                isValidUpdate = updateStaff.every(function (update) { return updatable.includes(update); });
+                if (!isValidUpdate) {
+                    return [2 /*return*/, res.status(400).send('Not valid update')];
+                }
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, Staff.findById(req.params.id)];
+            case 2:
+                staff_1 = _a.sent();
+                if (!staff_1) {
+                    return [2 /*return*/, res.status(404).send('This type of Student not found')];
+                }
+                updateStaff.forEach(function (update) {
+                    staff_1[update] = req.body[update];
+                });
+                return [4 /*yield*/, staff_1.save()];
+            case 3:
+                _a.sent();
+                res.send(staff_1);
+                return [3 /*break*/, 5];
+            case 4:
+                e_2 = _a.sent();
+                return [2 /*return*/, res.status(400).send(e_2)];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); });
+/**
+ * @description This below router delete the logged Staff
+*/
+router.delete('/staff/me/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var staff, e_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, Staff.findById(req.params.id)];
+            case 1:
+                staff = _a.sent();
+                console.log(req.params.id);
+                console.log(staff);
+                if (!staff) {
+                    return [2 /*return*/, res.status(404).send('Given Student is not exist.')];
+                }
+                return [4 /*yield*/, Staff.deleteOne({ _id: staff._id })];
+            case 2:
+                _a.sent();
+                res.send(staff);
+                return [3 /*break*/, 4];
+            case 3:
+                e_3 = _a.sent();
+                res.status(500).send('Something went wrong :( ');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+/**
  * @description this require method import database.js file
 */
 require('../../bin/database');
