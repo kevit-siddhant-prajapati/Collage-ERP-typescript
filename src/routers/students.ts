@@ -1,18 +1,13 @@
 /**
  * @description this routers/students.js file contains routers students
+ *  This file import Student models and perform CRUD operation on it
  */
 const express = require('express');
 const Student = require('../models/students');
-
 const router = express.Router()
 
-/**
- * @description this router use to create new user
- *  method-post   
- *  @param req : this pass data of 
- */
-router.post('/student/signup', async (req, res) => {
-    console.log('New student created')
+
+router.post('/students', async (req, res) => {
     try {
         // Validate request data here if needed
         const {name, email, currentSem, password, phoneNumber, department, batch, attendance} = req.body;
@@ -44,6 +39,10 @@ router.post('/student/signup', async (req, res) => {
     }
 });
 
+/**
+ * @description this router is used for checking profile of login student
+ * according to json web token it take profile of logged student
+*/
 router.get('/student/me/:id', async (req, res) => {
     //console.log(req.params.id)
     console.log('find new Student')
@@ -54,7 +53,7 @@ router.get('/student/me/:id', async (req, res) => {
     res.send(student)    
 })
 
-router.get('/students', async (req, res) => {
+router.get('/student', async (req, res) => {
     //console.log(req.params.id)
     console.log('find all students')
     const student = await Student.find({})
@@ -64,9 +63,10 @@ router.get('/students', async (req, res) => {
     res.send(student)    
 })
 
-router.patch('/student/update', async (req, res) => {
-    
+router.patch('/student/me', async (req, res) => {
+
 })
+
 /** 
  * @description this require method import database.js file 
 */

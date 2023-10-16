@@ -37,14 +37,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 /**
  * @description this routers/students.js file contains routers students
+ *  This file import Student models and perform CRUD operation on it
  */
 var express = require('express');
 var Student = require('../models/students');
 var router = express.Router();
 /**
+<<<<<<< Updated upstream
  * @description this router use to create new user
  *  method-post
  *  @param req : this pass data of
+=======
+ * @description this router create new Student
+ * it takes student object from postman and it to database
+>>>>>>> Stashed changes
  */
 router.post('/student/signup', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var _a, name_1, email, currentSem, password, phoneNumber, department, batch, attendance, newStudent, e_1, err_1;
@@ -93,6 +99,10 @@ router.post('/student/signup', function (req, res) { return __awaiter(_this, voi
         }
     });
 }); });
+/**
+ * @description this router is used for checking profile of login student
+ * according to json web token it take profile of logged student
+*/
 router.get('/student/me/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var student;
     return __generator(this, function (_a) {
@@ -111,6 +121,12 @@ router.get('/student/me/:id', function (req, res) { return __awaiter(_this, void
         }
     });
 }); });
+<<<<<<< Updated upstream
+=======
+/**
+ * @description below given router show data of all students
+*/
+>>>>>>> Stashed changes
 router.get('/students', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var student;
     return __generator(this, function (_a) {
@@ -129,9 +145,77 @@ router.get('/students', function (req, res) { return __awaiter(_this, void 0, vo
         }
     });
 }); });
+<<<<<<< Updated upstream
 router.patch('/student/update', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+=======
+/**
+ * @description below given router is useful to update details of logged student
+ * it takes json object from postman and update student
+*/
+router.patch('/student/me/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var updatable, updateStudent, isValidUpdate, student_1, e_2;
+>>>>>>> Stashed changes
     return __generator(this, function (_a) {
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0:
+                updatable = ['name', 'email', 'currentSem', 'password', 'phoneNumber', 'department', 'batch', 'attendance'];
+                updateStudent = Object.keys(req.body);
+                isValidUpdate = updateStudent.every(function (update) { return updatable.includes(update); });
+                if (!isValidUpdate) {
+                    return [2 /*return*/, res.status(400).send('Not valid update')];
+                }
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, Student.findById(req.params.id)];
+            case 2:
+                student_1 = _a.sent();
+                if (!student_1) {
+                    return [2 /*return*/, res.status(404).send('This type of Student not found')];
+                }
+                updateStudent.forEach(function (update) {
+                    student_1[update] = req.body[update];
+                });
+                return [4 /*yield*/, student_1.save()];
+            case 3:
+                _a.sent();
+                res.send(student_1);
+                return [3 /*break*/, 5];
+            case 4:
+                e_2 = _a.sent();
+                return [2 /*return*/, res.status(400).send(e_2)];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); });
+/**
+ * @description This below router delete the logged Student
+*/
+router.delete('/student/me/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var student, e_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, Student.findById(req.params.id)];
+            case 1:
+                student = _a.sent();
+                console.log(req.params.id);
+                console.log(student);
+                if (!student) {
+                    return [2 /*return*/, res.status(404).send('Given Student is not exist.')];
+                }
+                return [4 /*yield*/, Student.deleteOne({ _id: student._id })];
+            case 2:
+                _a.sent();
+                res.send(student);
+                return [3 /*break*/, 4];
+            case 3:
+                e_3 = _a.sent();
+                res.status(500).send('Something went wrong :( ');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
     });
 }); });
 /**
