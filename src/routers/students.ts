@@ -6,8 +6,11 @@ const express = require('express');
 const Student = require('../models/students');
 const router = express.Router()
 
-
-router.post('/students', async (req, res) => {
+/**
+ * @description this router create new Student
+ * it takes student object from postman and it to database
+ */
+router.post('/student/signup', async (req, res) => {
     try {
         // Validate request data here if needed
         const {name, email, currentSem, password, phoneNumber, department, batch, attendance} = req.body;
@@ -45,7 +48,6 @@ router.post('/students', async (req, res) => {
 */
 router.get('/student/me/:id', async (req, res) => {
     //console.log(req.params.id)
-    console.log('find new Student')
     const student = await Student.find({_id : req.params.id})
     if(!student){
         return res.status(404).send({error : 'student not exist'})
@@ -53,9 +55,11 @@ router.get('/student/me/:id', async (req, res) => {
     res.send(student)    
 })
 
-router.get('/student', async (req, res) => {
+/**
+ * @description below given router show data of all students
+*/
+router.get('/students', async (req, res) => {
     //console.log(req.params.id)
-    console.log('find all students')
     const student = await Student.find({})
     if(!student){
         return res.status(404).send({error : 'student not exist'})
@@ -63,8 +67,48 @@ router.get('/student', async (req, res) => {
     res.send(student)    
 })
 
-router.patch('/student/me', async (req, res) => {
+/**
+ * @description below given router is useful to update details of logged student
+ * it takes json object from postman and update student
+*/
+router.patch('/student/me/:id', async (req, res) => {
+    const updatable = ['name', 'email', 'currentSem', 'password', 'phoneNumber', 'department', 'batch', 'attendance']
+    const updateStudent = Object.keys(req.body)
+    const isValidUpdate = updateStudent.every(update => updatable.includes(update))
+    if(!isValidUpdate){
+        return res.status(400).send('Not valid update')
+    }
+    try {
+        const student = await Student.findById(req.params.id)
+        if(!student){
+            return res.status(404).send('This type of Student not found')
+        }
+        updateStudent.forEach(update => {
+            student[update] = req.body[update] 
+        })
+        await student.save()
+        res.send(student)
+    } catch( e ){
+        return res.status(400).send(e)
+    }
+})
 
+/**
+ * @description This below router delete the logged Student
+*/
+router.delete('/student/me/:id', async(req, res)=>{
+    try {
+        const student = await Student.findById(req.params.id)
+        console.log(req.params.id)
+        console.log(student)
+        if(!student){
+            return res.status(404).send('Given Student is not exist.')
+        }
+        await Student.deleteOne({_id : student._id})
+        res.send(student)
+    } catch ( e ){
+        res.status(500).send('Something went wrong :( ')
+    }
 })
 
 /** 
@@ -72,7 +116,6 @@ router.patch('/student/me', async (req, res) => {
 */
 require('../../bin/database')
 
-console.log('Connect with student router')
 /** 
  * @description responsible for running code on the server
 */
