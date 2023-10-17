@@ -2,7 +2,7 @@
  * @description this file contains staffSchema
 */
 import mongoose  from "mongoose";
-
+import * as bcrypt from "bcrypt"
 const validator = require('validator');
 const Schema = mongoose.Schema;
 
@@ -67,6 +67,19 @@ const staffSchema = new Schema({
     attendance : {
         type : Number,
         require : true
+    }
+})
+
+staffSchema.pre('save', async function(next){
+    const staff = this
+    try {
+        if(staff.isModified('password')){
+            const hashedpassword = await bcrypt.hash(staff.password , 8)
+            staff.password = hashedpassword.toString()
+        }
+        next()
+    } catch (e:any){
+        next(e);
     }
 })
 

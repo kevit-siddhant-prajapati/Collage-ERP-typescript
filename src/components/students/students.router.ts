@@ -2,44 +2,37 @@
  * @description this routers/students.js file contains routers students
  *  This file import Student models and perform CRUD operation on it
  */
-const express = require('express');
+import {Router, Request, Response} from "express";
 const Student = require('./students.model');
-const router = express.Router()
+import {studentsLogger} from "./students.logs"
+const router = Router()
 //import * as bcrypt from "bcrypt";
 
 /**
  * @description this router create new Student
  * it takes student object from postman and it to database
  */
-router.post('/student/signup', async (req, res) => {
+
+
+
+
+router.post('/student/signup', async (req:Request, res:Response) => {
     try {
         // Validate request data here if needed
-        const {name, email, currentSem, password, phoneNumber, department, batch, attendance} = req.body;
-        const newStudent = new Student({
-            name,
-            email,
-            currentSem,
-            password ,
-            phoneNumber,
-            department,
-            batch,
-            attendance
-        });
-        console.log('This is status of student',newStudent)
+        
+        const newStudent = new Student(req.body);
         try{
             await newStudent.save()
         }catch(e:any){
-            res.status(400).send({error : e.errors})
+            studentsLogger.error(`Unable to create student! error=${e}`)
+            return res.status(400).send({error : e.errors})
         }
-        
-
         // Respond with a 201 Created status code and the created student
+        studentsLogger.info(`Student created! ${newStudent}`)
         res.status(201).send(newStudent);
     } catch (err) {
-        // Log the error for debugging purposes
-        console.log(err)
-
         // Respond with a 500 Internal Server Error status code
+        studentsLogger.error('Internal server error!, unable to connect with application')
         res.status(500).send({ error: 'Internal Server Error' });
     }
 });
@@ -50,22 +43,30 @@ router.post('/student/signup', async (req, res) => {
  * @description this router is used for checking profile of login student
  * according to json web token it take profile of logged student
 */
-router.get('/student/me/:id', async (req, res) => {
-    //console.log(req.params.id)
-    const student = await Student.find({_id : req.params.id})
-    if(!student){
-        return res.status(404).send({error : 'student not exist'})
+router.get('/student/me/:id', async (req:Request, res:Response) => {
+    try {
+        const student = await Student.find({_id : req.params.id})
+        if(!student){
+            studentsLogger.error(`${req.params._id} - this student not found`)
+            return res.status(404).send({error : 'student not exist'})
+        }
+        res.status(200).send(student)  
+        studentsLogger.info(`Getting the profile of student`)  
+    } catch (error) {
+        studentsLogger.error('Internal server error!, unable to connect with application')
+        res.status(500).send({ error: 'Internal Server Error' });
     }
-    res.send(student)    
+    
 })
 
 /**
  * @description below given router show data of all students
 */
-router.get('/students', async (req, res) => {
+router.get('/students', async (req:Request, res:Response) => {
     //console.log(req.params.id)
     const student = await Student.find({})
     if(!student){
+        studentsLogger.error(`Unable to get data of all students`)
         return res.status(404).send({error : 'student not exist'})
     }
     res.send(student)    
@@ -75,16 +76,18 @@ router.get('/students', async (req, res) => {
  * @description below given router is useful to update details of logged student
  * it takes json object from postman and update student
 */
-router.patch('/student/me/:id', async (req, res) => {
+router.patch('/student/me/:id', async (req:Request, res:Response) => {
     const updatable = ['name', 'email', 'currentSem', 'password', 'phoneNumber', 'department', 'batch', 'attendance']
     const updateStudent = Object.keys(req.body)
     const isValidUpdate = updateStudent.every(update => updatable.includes(update))
     if(!isValidUpdate){
+        studentsLogger.error(`Not valid student Update`)
         return res.status(400).send('Not valid update')
     }
     try {
         const student = await Student.findById(req.params.id)
         if(!student){
+            studentsLogger.error(`Unable to find student`)
             return res.status(404).send('This type of Student not found')
         }
         updateStudent.forEach(update => {
@@ -100,17 +103,19 @@ router.patch('/student/me/:id', async (req, res) => {
 /**
  * @description This below router delete the logged Student
 */
-router.delete('/student/me/:id', async(req, res)=>{
+router.delete('/student/me/:id', async(req:Request, res:Response)=>{
     try {
         const student = await Student.findById(req.params.id)
         console.log(req.params.id)
         console.log(student)
         if(!student){
+            studentsLogger.error(`Requested student not found`)
             return res.status(404).send('Given Student is not exist.')
         }
         await Student.deleteOne({_id : student._id})
         res.send(student)
     } catch ( e ){
+        studentsLogger.error('Internal server error!, unable to connect with application')
         res.status(500).send('Something went wrong :( ')
     }
 })
@@ -118,7 +123,7 @@ router.delete('/student/me/:id', async(req, res)=>{
 /**
  * @description below router is use for fill student attendence
 */
-router.patch('/students/attendance', async(req, res) => {
+router.patch('/students/attendance', async(req:Request, res:Response) => {
     try {
         const attendStudent = req.body.attendance;
 
@@ -126,17 +131,19 @@ router.patch('/students/attendance', async(req, res) => {
             const student = await Student.findById(attendie);
 
             if (student) {
+                
                 student.attendance += 1;
                 await student.save();
                 console.log(attendie);
             } else {
+                studentsLogger.error(`Unable to fill attendance of requested students!`)
                 console.log(`Student with ID ${attendie} not found`);
             }
         }
 
         res.status(200).send({ message: 'Attendance updated successfully' });
     } catch (error) {
-        console.error(error);
+        studentsLogger.error('Internal server error!, unable to connect with application')
         res.status(500).send({ error: 'Internal Server Error' });
     }
 })

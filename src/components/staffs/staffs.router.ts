@@ -1,23 +1,16 @@
 /**
  * @description this routers/students.js file contains routers students
  */
-const express = require("express")
+import { Router, Request, Response} from "express"
 const Staff = require('./staffs.model');
-const router = express.Router()
+const router = Router()
 
 
-router.post('/staff/signup', async (req, res) => {
+router.post('/staff/signup', async (req:Request, res:Response) => {
     try {
         // Validate request data here if needed
-        const {name, email, password, phoneNumber, department, attendance} = req.body;
-        const newStaff = new Staff({
-            name,
-            email,
-            password,
-            phoneNumber,
-            department,
-            attendance
-        });
+        
+        const newStaff = new Staff(req.body);
         console.log('This is status of student',newStaff)
         try{
             await newStaff.save()
@@ -36,7 +29,7 @@ router.post('/staff/signup', async (req, res) => {
     }
 });
 
-router.get('/staff/me/:id', async (req, res) => {
+router.get('/staff/me/:id', async (req:Request, res: Response) => {
     //console.log(req.params.id)
     const staff = await Staff.find({_id : req.params.id})
     if(!staff){
@@ -48,7 +41,7 @@ router.get('/staff/me/:id', async (req, res) => {
 /** 
  * @describe this get method show all staff that are present in the database
 */
-router.get('/staffs', async (req, res) => {
+router.get('/staffs', async (req:Request, res:Response) => {
     //console.log(req.params.id)
     const staff = await Staff.find({})
     if(!staff){
@@ -61,7 +54,7 @@ router.get('/staffs', async (req, res) => {
  * @description below given router is useful to update details of logged staff
  * it takes json object from postman and update staff
 */
-router.patch('/staff/me/:id', async (req, res) => {
+router.patch('/staff/me/:id', async (req:Request, res:Response) => {
     const updatable = ['name', 'email', 'password', 'phoneNumber', 'department', 'attendance']
     const updateStaff = Object.keys(req.body)
     const isValidUpdate = updateStaff.every(update => updatable.includes(update))
@@ -86,7 +79,7 @@ router.patch('/staff/me/:id', async (req, res) => {
 /**
  * @description This below router delete the logged Staff
 */
-router.delete('/staff/me/:id', async(req, res)=>{
+router.delete('/staff/me/:id', async(req:Request, res:Response)=>{
     try {
         const staff = await Staff.findById(req.params.id)
         console.log(req.params.id)

@@ -17,7 +17,19 @@ import * as bcrypt from "bcrypt";
  * @param attendence:number value-total number of attendence
  * @param email:string         property-required
 */
-var studentSchema = new Schema({
+
+interface IStudent {
+    name:string,
+    email:string,
+    currentSem:number,
+    password:string,
+    phoneNumber : string,
+    department : string,
+    batch : number,
+    attendance : number
+}
+
+var studentSchema = new Schema<IStudent>({
     name: {
         type: String,
         required: true,
@@ -102,13 +114,13 @@ studentSchema.pre('save', async function (next) {
             console.log(student.password)
         }
         next();
-    } catch (error) {
+    } catch (error:any) {
         next(error);
     }
 });
 
 
-const Student = mongoose.model('Student', studentSchema);
+const Student = mongoose.model<IStudent>('Student', studentSchema);
 module.exports = Student;
 // const student = new Student({
 //     name : 'Siddhant',

@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -34,38 +35,30 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @description this routers/students.js file contains routers students
  */
-var express = require("express");
+var express_1 = require("express");
 var Staff = require('./staffs.model');
-var router = express.Router();
-router.post('/staff/signup', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var _a, name_1, email, password, phoneNumber, department, attendance, newStaff, e_1, err_1;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+var router = (0, express_1.Router)();
+router.post('/staff/signup', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var newStaff, e_1, err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                _b.trys.push([0, 5, , 6]);
-                _a = req.body, name_1 = _a.name, email = _a.email, password = _a.password, phoneNumber = _a.phoneNumber, department = _a.department, attendance = _a.attendance;
-                newStaff = new Staff({
-                    name: name_1,
-                    email: email,
-                    password: password,
-                    phoneNumber: phoneNumber,
-                    department: department,
-                    attendance: attendance
-                });
+                _a.trys.push([0, 5, , 6]);
+                newStaff = new Staff(req.body);
                 console.log('This is status of student', newStaff);
-                _b.label = 1;
+                _a.label = 1;
             case 1:
-                _b.trys.push([1, 3, , 4]);
+                _a.trys.push([1, 3, , 4]);
                 return [4 /*yield*/, newStaff.save()];
             case 2:
-                _b.sent();
+                _a.sent();
                 return [3 /*break*/, 4];
             case 3:
-                e_1 = _b.sent();
+                e_1 = _a.sent();
                 res.status(400).send({ error: e_1 });
                 return [3 /*break*/, 4];
             case 4:
@@ -73,7 +66,7 @@ router.post('/staff/signup', function (req, res) { return __awaiter(_this, void 
                 res.status(201).send(newStaff);
                 return [3 /*break*/, 6];
             case 5:
-                err_1 = _b.sent();
+                err_1 = _a.sent();
                 // Log the error for debugging purposes
                 console.log(err_1);
                 // Respond with a 500 Internal Server Error status code
@@ -83,7 +76,7 @@ router.post('/staff/signup', function (req, res) { return __awaiter(_this, void 
         }
     });
 }); });
-router.get('/staff/me/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.get('/staff/me/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var staff;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -101,7 +94,7 @@ router.get('/staff/me/:id', function (req, res) { return __awaiter(_this, void 0
 /**
  * @describe this get method show all staff that are present in the database
 */
-router.get('/staffs', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.get('/staffs', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var staff;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -120,7 +113,7 @@ router.get('/staffs', function (req, res) { return __awaiter(_this, void 0, void
  * @description below given router is useful to update details of logged staff
  * it takes json object from postman and update staff
 */
-router.patch('/staff/me/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.patch('/staff/me/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var updatable, updateStaff, isValidUpdate, staff_1, e_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -158,7 +151,7 @@ router.patch('/staff/me/:id', function (req, res) { return __awaiter(_this, void
 /**
  * @description This below router delete the logged Staff
 */
-router.delete('/staff/me/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.delete('/staff/me/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var staff, e_3;
     return __generator(this, function (_a) {
         switch (_a.label) {

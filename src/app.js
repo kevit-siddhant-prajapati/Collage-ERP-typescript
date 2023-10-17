@@ -6,7 +6,7 @@ var app = express();
 var PORT = process.env.PORT || 3000;
 var studentRouter = require('./components/students/students.router');
 var staffRouter = require('./components/staffs/staffs.router');
-var adminRouter = require('./routers/admin');
+var adminRouter = require('./components/admins/admin.router');
 app.use(express.json());
 app.use(studentRouter);
 app.use(staffRouter);
