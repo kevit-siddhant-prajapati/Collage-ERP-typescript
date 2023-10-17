@@ -43,6 +43,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var validator_1 = require("validator");
 var Schema = mongoose_1.default.Schema;
+var bcrypt = require("bcrypt");
 /**
  * @description studentSchema that contain property
  * @param name:String   -contain name of the student     property-required
@@ -131,17 +132,34 @@ var studentSchema = new Schema({
         require: true
     }
 });
-// studentSchema.pre('save', async function (next) {
-//     const student = this;
-//     try {
-//         if (student.isModified('password')) {
-//             const hashedpassword = await bcrypt.hash(student.password, 8);
-//             student.password = hashedpassword.toString();
-//         }
-//         next();
-//     } catch (error) {
-//         next(error);
-//     }
-// });
+studentSchema.pre('save', function (next) {
+    return __awaiter(this, void 0, void 0, function () {
+        var student, hashedpassword, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    student = this;
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 4, , 5]);
+                    if (!student.isModified('password')) return [3 /*break*/, 3];
+                    return [4 /*yield*/, bcrypt.hash(student.password, 8)];
+                case 2:
+                    hashedpassword = _a.sent();
+                    student.password = hashedpassword.toString();
+                    console.log(student.password);
+                    _a.label = 3;
+                case 3:
+                    next();
+                    return [3 /*break*/, 5];
+                case 4:
+                    error_1 = _a.sent();
+                    next(error_1);
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+});
 var Student = mongoose_1.default.model('Student', studentSchema);
 module.exports = Student;

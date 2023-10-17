@@ -3,9 +3,9 @@
  *  This file import Student models and perform CRUD operation on it
  */
 const express = require('express');
-const Student = require('../models/students');
+const Student = require('./students.model');
 const router = express.Router()
-import * as bcrypt from "bcrypt";
+//import * as bcrypt from "bcrypt";
 
 /**
  * @description this router create new Student
@@ -115,10 +115,36 @@ router.delete('/student/me/:id', async(req, res)=>{
     }
 })
 
+/**
+ * @description below router is use for fill student attendence
+*/
+router.patch('/students/attendance', async(req, res) => {
+    try {
+        const attendStudent = req.body.attendance;
+
+        for (const attendie of attendStudent) {
+            const student = await Student.findById(attendie);
+
+            if (student) {
+                student.attendance += 1;
+                await student.save();
+                console.log(attendie);
+            } else {
+                console.log(`Student with ID ${attendie} not found`);
+            }
+        }
+
+        res.status(200).send({ message: 'Attendance updated successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: 'Internal Server Error' });
+    }
+})
+
 /** 
  * @description this require method import database.js file 
 */
-require('../../bin/database')
+require('../../../bin/database')
 
 /** 
  * @description responsible for running code on the server

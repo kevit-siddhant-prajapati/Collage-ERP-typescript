@@ -95,9 +95,11 @@ var studentSchema = new Schema({
 studentSchema.pre('save', async function (next) {
     const student = this;
     try {
+        
         if (student.isModified('password')) {
             const hashedpassword = await bcrypt.hash(student.password, 8);
             student.password = hashedpassword.toString();
+            console.log(student.password)
         }
         next();
     } catch (error) {

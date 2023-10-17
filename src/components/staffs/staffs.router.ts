@@ -2,7 +2,7 @@
  * @description this routers/students.js file contains routers students
  */
 const express = require("express")
-const Staff = require('../models/staffs');
+const Staff = require('./staffs.model');
 const router = express.Router()
 
 
@@ -104,7 +104,7 @@ router.delete('/staff/me/:id', async(req, res)=>{
 /** 
  * @description this require method import database.js file 
 */
-require('../../bin/database')
+require('../../../bin/database')
 
 /** 
  * @description export all router to use together

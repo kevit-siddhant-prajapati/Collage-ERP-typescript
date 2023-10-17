@@ -4,8 +4,8 @@ var express = require("express");
 //require('./src/db/mongoose')
 var app = express();
 var PORT = process.env.PORT || 3000;
-var studentRouter = require('./routers/students');
-var staffRouter = require('./routers/staffs');
+var studentRouter = require('./components/students/students.router');
+var staffRouter = require('./components/staffs/staffs.router');
 var adminRouter = require('./routers/admin');
 app.use(express.json());
 app.use(studentRouter);

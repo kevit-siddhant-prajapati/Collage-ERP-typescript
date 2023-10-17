@@ -4,8 +4,8 @@ import * as express from 'express';
 const app = express()
 const PORT = process.env.PORT || 3000;
 
-const studentRouter = require('./routers/students')
-const staffRouter = require('./routers/staffs')
+const studentRouter = require('./components/students/students.router')
+const staffRouter = require('./components/staffs/staffs.router')
 const adminRouter = require('./routers/admin')
 
 app.use(express.json())
