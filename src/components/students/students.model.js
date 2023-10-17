@@ -44,16 +44,6 @@ var mongoose_1 = require("mongoose");
 var validator_1 = require("validator");
 var Schema = mongoose_1.default.Schema;
 var bcrypt = require("bcrypt");
-/**
- * @description studentSchema that contain property
- * @param name:String   -contain name of the student     property-required
- * @param phoneNo:number     property- default:null
- * @param department:String   value-Branch of students     property- must in [CE, EC, ME]
- * @param batch:number     value-admission year of student     property-required
- * @param currentSem:number   value-current semester of student       property-must between 1 to 8
- * @param attendence:number value-total number of attendence
- * @param email:string         property-required
-*/
 var studentSchema = new Schema({
     name: {
         type: String,
