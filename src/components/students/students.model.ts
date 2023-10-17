@@ -102,7 +102,7 @@ studentSchema.pre('save', async function (next) {
             console.log(student.password)
         }
         next();
-    } catch (error) {
+    } catch (error:any) {
         next(error);
     }
 });

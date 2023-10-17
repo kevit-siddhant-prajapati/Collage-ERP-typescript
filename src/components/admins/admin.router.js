@@ -41,7 +41,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 var express = require("express");
 //const express = require('express');
-var Admin = require('../models/admin');
+var Admin = require('./admin.model');
 var router = express.Router();
 router.post('/admin/signup', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, name_1, email, password, newAdmin, e_1, err_1;
@@ -65,8 +65,7 @@ router.post('/admin/signup', function (req, res) { return __awaiter(void 0, void
                 return [3 /*break*/, 4];
             case 3:
                 e_1 = _b.sent();
-                res.status(400).send({ error: e_1 });
-                return [3 /*break*/, 4];
+                return [2 /*return*/, res.status(400).send({ error: e_1 })];
             case 4:
                 // Respond with a 201 Created status code and the created student
                 res.status(201).send(newAdmin);
@@ -187,7 +186,7 @@ router.delete('/admin/me/:id', function (req, res) { return __awaiter(void 0, vo
 /**
  * @description this require method import database.js file
 */
-require('../../bin/database');
+require('../../../bin/database');
 /**
  * @description export all router to use together
 */

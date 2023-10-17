@@ -4,7 +4,7 @@
 import * as express from 'express'
 import mongoose from 'mongoose';
 //const express = require('express');
-const Admin = require('../models/admin');
+const Admin = require('./admin.model');
 
 const router = express.Router()
 
@@ -22,7 +22,7 @@ router.post('/admin/signup', async (req, res) => {
         try{
             await newAdmin.save()
         }catch(e){
-            res.status(400).send({error : e})
+            return res.status(400).send({error : e})
         }
         
         // Respond with a 201 Created status code and the created student
@@ -107,7 +107,7 @@ router.delete('/admin/me/:id', async(req, res)=>{
 /** 
  * @description this require method import database.js file 
 */
-require('../../bin/database')
+require('../../../bin/database')
 
 /** 
  * @description export all router to use together
