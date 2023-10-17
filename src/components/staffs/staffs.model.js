@@ -1,9 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @description this file contains staffSchema
 */
-var mongoose = require('mongoose');
+var mongoose_1 = require("mongoose");
 var validator = require('validator');
-var Schema = mongoose.Schema;
+var Schema = mongoose_1.default.Schema;
 /**
  * @description staffSchema that contain property
  * @param name:String   -contain name of the staff     property-required
@@ -67,5 +69,5 @@ var staffSchema = new Schema({
         require: true
     }
 });
-var Staff = mongoose.model('Staff', staffSchema);
+var Staff = mongoose_1.default.model('Staff', staffSchema);
 module.exports = Staff;

@@ -3,11 +3,10 @@
  * @description this file contains studentSchema
 */
 // Object.defineProperty(exports, "__esModule", { value: true });
-var mongoose = require('mongoose');
-var validator = require("validator");
-var Schema = mongoose.Schema;
-var url = 'mongodb://localhost:27017';
-var client = mongoose.createConnection(url + '/Collage-ERP');
+import mongoose from "mongoose"
+import validator from "validator"
+const Schema = mongoose.Schema;
+import * as bcrypt from "bcrypt";
 /**
  * @description studentSchema that contain property
  * @param name:String   -contain name of the student     property-required
@@ -23,7 +22,7 @@ var studentSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        validate: function (value) {
+        validate: function (value:string) {
             if (value == null) {
                 throw new Error('Name is required');
             }
@@ -33,7 +32,7 @@ var studentSchema = new Schema({
         type: String,
         require: true,
         unique: true,
-        validate: function (value) {
+        validate: function (value:string) {
             if (!validator.isEmail(value)) {
                 throw new Error('Email is invalid');
             }
@@ -42,7 +41,7 @@ var studentSchema = new Schema({
     currentSem: {
         type: Number,
         default: 0,
-        validate: function (value) {
+        validate: function (value:number) {
             if (value < 0 && value >= 8) {
                 throw new Error('This current Sem is not available');
             }
@@ -52,16 +51,17 @@ var studentSchema = new Schema({
         type: String,
         require: true,
         minlength: 7,
-        validate: function (value) {
+        validate: async function (value:string) {
             value = value.trim();
             if (value.toLowerCase() == 'password') {
                 throw new Error('Password must not contain string "password"');
             }
+            //value = await bcrypt.hash(value, 8)
         }
     },
     phoneNumber: {
         type: String,
-        validate: function (value) {
+        validate: function (value:string) {
             if (value.length != 10) {
                 throw new Error('Please insert right phoneNumber');
             }
@@ -70,7 +70,7 @@ var studentSchema = new Schema({
     department: {
         type: String,
         require: true,
-        validate: function (value) {
+        validate: function (value:string) {
             var Branch = ['CE', 'ME', 'EC'];
             if (!Branch.includes(value)) {
                 throw new Error('Branch must in CE, ME and EC');
@@ -80,7 +80,7 @@ var studentSchema = new Schema({
     batch: {
         type: Number,
         require: true,
-        validate: function (value) {
+        validate: function (value:number) {
             if (value < 2000 || value > 3000) {
                 throw new Error('Enter valid batch');
             }
@@ -91,5 +91,34 @@ var studentSchema = new Schema({
         require: true
     }
 });
-var Student = mongoose.model('Student', studentSchema);
+
+studentSchema.pre('save', async function (next) {
+    const student = this;
+    try {
+        
+        if (student.isModified('password')) {
+            const hashedpassword = await bcrypt.hash(student.password, 8);
+            student.password = hashedpassword.toString();
+            console.log(student.password)
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
+
+const Student = mongoose.model('Student', studentSchema);
 module.exports = Student;
+// const student = new Student({
+//     name : 'Siddhant',
+//     email : 'siddhant@example.com',
+//     currentSem : 4,
+//     password : 'Sid@1234',
+//     phoneNumber : 1234567890,
+//     department : 'CE',
+//     batch : 2020,
+//     attendance : 210
+// })
+// student.save()
+// console.log(student)

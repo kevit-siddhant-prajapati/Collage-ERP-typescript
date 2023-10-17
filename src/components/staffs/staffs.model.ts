@@ -1,8 +1,8 @@
 /** 
  * @description this file contains staffSchema
 */
+import mongoose  from "mongoose";
 
-const mongoose = require('mongoose');
 const validator = require('validator');
 const Schema = mongoose.Schema;
 
@@ -19,7 +19,7 @@ const staffSchema = new Schema({
         type : String,
         required: true,
         trim : true,
-        validate(value){
+        validate(value:String){
             if(value == null){
                 throw new Error('Name is required')
             }
@@ -29,7 +29,7 @@ const staffSchema = new Schema({
         type : String,
         require: true,
         unique :true,
-        validate(value){
+        validate(value:String){
             if(!validator.isEmail(value)){
                 throw new Error('Email is invalid')
             }
@@ -39,7 +39,7 @@ const staffSchema = new Schema({
         type : String,
         require : true,
         minlength : 7,
-        validate(value){
+        validate(value:String){
             value = value.trim()
             if(value.toLowerCase() == 'password'){
                 throw new Error('Password must not contain string "password"')
@@ -48,7 +48,7 @@ const staffSchema = new Schema({
     },
     phoneNumber : {
         type : String,
-        validate(value){
+        validate(value:String){
             if(value.length != 10){
                 throw new Error('Please insert right phoneNumber')
             }
@@ -57,7 +57,7 @@ const staffSchema = new Schema({
     department : {
         type : String,
         require : true,
-        validate(value){
+        validate(value:string){
             const Branch = ['CE', 'ME', 'EC']
             if(!Branch.includes(value)){
                 throw new Error('Branch must in CE, ME and EC')

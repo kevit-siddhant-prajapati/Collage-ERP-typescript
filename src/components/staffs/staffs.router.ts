@@ -1,13 +1,12 @@
 /**
  * @description this routers/students.js file contains routers students
  */
-const express = require('express');
-const Staff = require('../models/staffs');
-
+const express = require("express")
+const Staff = require('./staffs.model');
 const router = express.Router()
 
 
-router.post('/staffs', async (req, res) => {
+router.post('/staff/signup', async (req, res) => {
     try {
         // Validate request data here if needed
         const {name, email, password, phoneNumber, department, attendance} = req.body;
@@ -58,10 +57,54 @@ router.get('/staffs', async (req, res) => {
     res.send(staff)    
 })
 
+/**
+ * @description below given router is useful to update details of logged staff
+ * it takes json object from postman and update staff
+*/
+router.patch('/staff/me/:id', async (req, res) => {
+    const updatable = ['name', 'email', 'password', 'phoneNumber', 'department', 'attendance']
+    const updateStaff = Object.keys(req.body)
+    const isValidUpdate = updateStaff.every(update => updatable.includes(update))
+    if(!isValidUpdate){
+        return res.status(400).send('Not valid update')
+    }
+    try {
+        const staff = await Staff.findById(req.params.id)
+        if(!staff){
+            return res.status(404).send('This type of Student not found')
+        }
+        updateStaff.forEach(update => {
+            staff[update] = req.body[update] 
+        })
+        await staff.save()
+        res.send(staff)
+    } catch( e ){
+        return res.status(400).send(e)
+    }
+})
+
+/**
+ * @description This below router delete the logged Staff
+*/
+router.delete('/staff/me/:id', async(req, res)=>{
+    try {
+        const staff = await Staff.findById(req.params.id)
+        console.log(req.params.id)
+        console.log(staff)
+        if(!staff){
+            return res.status(404).send('Given Student is not exist.')
+        }
+        await Staff.deleteOne({_id : staff._id})
+        res.send(staff)
+    } catch ( e ){
+        res.status(500).send('Something went wrong :( ')
+    }
+})
+
 /** 
  * @description this require method import database.js file 
 */
-require('../../bin/database')
+require('../../../bin/database')
 
 /** 
  * @description export all router to use together

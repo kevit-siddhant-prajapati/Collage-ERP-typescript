@@ -37,11 +37,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 /**
  * @description this routers/students.js file contains routers students
+ *  This file import Student models and perform CRUD operation on it
  */
 var express = require('express');
-var Student = require('../models/students');
+var Student = require('./students.model');
 var router = express.Router();
-router.post('/students', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+//import * as bcrypt from "bcrypt";
+/**
+ * @description this router create new Student
+ * it takes student object from postman and it to database
+ */
+router.post('/student/signup', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var _a, name_1, email, currentSem, password, phoneNumber, department, batch, attendance, newStudent, e_1, err_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -85,6 +91,10 @@ router.post('/students', function (req, res) { return __awaiter(_this, void 0, v
         }
     });
 }); });
+/**
+ * @description this router is used for checking profile of login student
+ * according to json web token it take profile of logged student
+*/
 router.get('/student/me/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var student;
     return __generator(this, function (_a) {
@@ -100,7 +110,10 @@ router.get('/student/me/:id', function (req, res) { return __awaiter(_this, void
         }
     });
 }); });
-router.get('/student', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+/**
+ * @description below given router show data of all students
+*/
+router.get('/students', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var student;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -115,15 +128,122 @@ router.get('/student', function (req, res) { return __awaiter(_this, void 0, voi
         }
     });
 }); });
-router.patch('/student/me', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+/**
+ * @description below given router is useful to update details of logged student
+ * it takes json object from postman and update student
+*/
+router.patch('/student/me/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var updatable, updateStudent, isValidUpdate, student_1, e_2;
     return __generator(this, function (_a) {
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0:
+                updatable = ['name', 'email', 'currentSem', 'password', 'phoneNumber', 'department', 'batch', 'attendance'];
+                updateStudent = Object.keys(req.body);
+                isValidUpdate = updateStudent.every(function (update) { return updatable.includes(update); });
+                if (!isValidUpdate) {
+                    return [2 /*return*/, res.status(400).send('Not valid update')];
+                }
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, Student.findById(req.params.id)];
+            case 2:
+                student_1 = _a.sent();
+                if (!student_1) {
+                    return [2 /*return*/, res.status(404).send('This type of Student not found')];
+                }
+                updateStudent.forEach(function (update) {
+                    student_1[update] = req.body[update];
+                });
+                return [4 /*yield*/, student_1.save()];
+            case 3:
+                _a.sent();
+                res.send(student_1);
+                return [3 /*break*/, 5];
+            case 4:
+                e_2 = _a.sent();
+                return [2 /*return*/, res.status(400).send(e_2)];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); });
+/**
+ * @description This below router delete the logged Student
+*/
+router.delete('/student/me/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var student, e_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, Student.findById(req.params.id)];
+            case 1:
+                student = _a.sent();
+                console.log(req.params.id);
+                console.log(student);
+                if (!student) {
+                    return [2 /*return*/, res.status(404).send('Given Student is not exist.')];
+                }
+                return [4 /*yield*/, Student.deleteOne({ _id: student._id })];
+            case 2:
+                _a.sent();
+                res.send(student);
+                return [3 /*break*/, 4];
+            case 3:
+                e_3 = _a.sent();
+                res.status(500).send('Something went wrong :( ');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+/**
+ * @description below router is use for fill student attendence
+*/
+router.patch('/students/attendance', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var attendStudent, _i, attendStudent_1, attendie, student, error_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 7, , 8]);
+                attendStudent = req.body.attendance;
+                _i = 0, attendStudent_1 = attendStudent;
+                _a.label = 1;
+            case 1:
+                if (!(_i < attendStudent_1.length)) return [3 /*break*/, 6];
+                attendie = attendStudent_1[_i];
+                return [4 /*yield*/, Student.findById(attendie)];
+            case 2:
+                student = _a.sent();
+                if (!student) return [3 /*break*/, 4];
+                student.attendance += 1;
+                return [4 /*yield*/, student.save()];
+            case 3:
+                _a.sent();
+                console.log(attendie);
+                return [3 /*break*/, 5];
+            case 4:
+                console.log("Student with ID ".concat(attendie, " not found"));
+                _a.label = 5;
+            case 5:
+                _i++;
+                return [3 /*break*/, 1];
+            case 6:
+                res.status(200).send({ message: 'Attendance updated successfully' });
+                return [3 /*break*/, 8];
+            case 7:
+                error_1 = _a.sent();
+                console.error(error_1);
+                res.status(500).send({ error: 'Internal Server Error' });
+                return [3 /*break*/, 8];
+            case 8: return [2 /*return*/];
+        }
     });
 }); });
 /**
  * @description this require method import database.js file
 */
-require('../../bin/database');
+require('../../../bin/database');
 /**
  * @description responsible for running code on the server
 */
