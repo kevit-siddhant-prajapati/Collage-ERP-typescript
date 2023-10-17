@@ -56,6 +56,7 @@ router.post('/student/signup', function (req, res) { return __awaiter(void 0, vo
             case 0:
                 _a.trys.push([0, 5, , 6]);
                 newStudent = new Student(req.body);
+                console.log('This is status of student', newStudent);
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
@@ -65,17 +66,18 @@ router.post('/student/signup', function (req, res) { return __awaiter(void 0, vo
                 return [3 /*break*/, 4];
             case 3:
                 e_1 = _a.sent();
-                students_logs_1.studentsLogger.error("Unable to create student! error=".concat(e_1));
+                students_logs_1.studentsLogger.error('Unable to create student!');
                 return [2 /*return*/, res.status(400).send({ error: e_1.errors })];
             case 4:
                 // Respond with a 201 Created status code and the created student
-                students_logs_1.studentsLogger.info("Student created! ".concat(newStudent));
+                students_logs_1.studentsLogger.info('Student created!', newStudent);
                 res.status(201).send(newStudent);
                 return [3 /*break*/, 6];
             case 5:
                 err_1 = _a.sent();
+                // Log the error for debugging purposes
+                console.log(err_1);
                 // Respond with a 500 Internal Server Error status code
-                students_logs_1.studentsLogger.error('Internal server error!, unable to connect with application');
                 res.status(500).send({ error: 'Internal Server Error' });
                 return [3 /*break*/, 6];
             case 6: return [2 /*return*/];
@@ -87,27 +89,17 @@ router.post('/student/signup', function (req, res) { return __awaiter(void 0, vo
  * according to json web token it take profile of logged student
 */
 router.get('/student/me/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var student, error_1;
+    var student;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, Student.find({ _id: req.params.id })];
+            case 0: return [4 /*yield*/, Student.find({ _id: req.params.id })];
             case 1:
                 student = _a.sent();
                 if (!student) {
-                    students_logs_1.studentsLogger.error("".concat(req.params._id, " - this student not found"));
                     return [2 /*return*/, res.status(404).send({ error: 'student not exist' })];
                 }
-                res.status(200).send(student);
-                students_logs_1.studentsLogger.info("Getting the profile of student");
-                return [3 /*break*/, 3];
-            case 2:
-                error_1 = _a.sent();
-                students_logs_1.studentsLogger.error('Internal server error!, unable to connect with application');
-                res.status(500).send({ error: 'Internal Server Error' });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                res.send(student);
+                return [2 /*return*/];
         }
     });
 }); });
@@ -122,7 +114,6 @@ router.get('/students', function (req, res) { return __awaiter(void 0, void 0, v
             case 1:
                 student = _a.sent();
                 if (!student) {
-                    students_logs_1.studentsLogger.error("Unable to get data of all students");
                     return [2 /*return*/, res.status(404).send({ error: 'student not exist' })];
                 }
                 res.send(student);
@@ -143,7 +134,6 @@ router.patch('/student/me/:id', function (req, res) { return __awaiter(void 0, v
                 updateStudent = Object.keys(req.body);
                 isValidUpdate = updateStudent.every(function (update) { return updatable.includes(update); });
                 if (!isValidUpdate) {
-                    students_logs_1.studentsLogger.error("Not valid student Update");
                     return [2 /*return*/, res.status(400).send('Not valid update')];
                 }
                 _a.label = 1;
@@ -153,7 +143,6 @@ router.patch('/student/me/:id', function (req, res) { return __awaiter(void 0, v
             case 2:
                 student_1 = _a.sent();
                 if (!student_1) {
-                    students_logs_1.studentsLogger.error("Unable to find student");
                     return [2 /*return*/, res.status(404).send('This type of Student not found')];
                 }
                 updateStudent.forEach(function (update) {
@@ -186,7 +175,6 @@ router.delete('/student/me/:id', function (req, res) { return __awaiter(void 0, 
                 console.log(req.params.id);
                 console.log(student);
                 if (!student) {
-                    students_logs_1.studentsLogger.error("Requested student not found");
                     return [2 /*return*/, res.status(404).send('Given Student is not exist.')];
                 }
                 return [4 /*yield*/, Student.deleteOne({ _id: student._id })];
@@ -196,7 +184,6 @@ router.delete('/student/me/:id', function (req, res) { return __awaiter(void 0, 
                 return [3 /*break*/, 4];
             case 3:
                 e_3 = _a.sent();
-                students_logs_1.studentsLogger.error('Internal server error!, unable to connect with application');
                 res.status(500).send('Something went wrong :( ');
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
@@ -207,7 +194,7 @@ router.delete('/student/me/:id', function (req, res) { return __awaiter(void 0, 
  * @description below router is use for fill student attendence
 */
 router.patch('/students/attendance', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var attendStudent, _i, attendStudent_1, attendie, student, error_2;
+    var attendStudent, _i, attendStudent_1, attendie, student, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -229,7 +216,6 @@ router.patch('/students/attendance', function (req, res) { return __awaiter(void
                 console.log(attendie);
                 return [3 /*break*/, 5];
             case 4:
-                students_logs_1.studentsLogger.error("Unable to fill attendance of requested students!");
                 console.log("Student with ID ".concat(attendie, " not found"));
                 _a.label = 5;
             case 5:
@@ -239,8 +225,8 @@ router.patch('/students/attendance', function (req, res) { return __awaiter(void
                 res.status(200).send({ message: 'Attendance updated successfully' });
                 return [3 /*break*/, 8];
             case 7:
-                error_2 = _a.sent();
-                students_logs_1.studentsLogger.error('Internal server error!, unable to connect with application');
+                error_1 = _a.sent();
+                console.error(error_1);
                 res.status(500).send({ error: 'Internal Server Error' });
                 return [3 /*break*/, 8];
             case 8: return [2 /*return*/];
