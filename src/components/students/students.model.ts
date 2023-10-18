@@ -7,6 +7,7 @@ import mongoose from "mongoose"
 import validator from "validator"
 const Schema = mongoose.Schema;
 import * as bcrypt from "bcrypt";
+import * as jwt from "jsonwebtoken";
 /**
  * @description studentSchema that contain property
  * @param name:String   -contain name of the student     property-required
@@ -24,9 +25,9 @@ interface IStudent {
     currentSem:number,
     password:string,
     phoneNumber : string,
-    department : string,
     batch : number,
-    attendance : number
+    attendance : number,
+    tokens : Array<string>
 }
 
 const studentSchema = new Schema<IStudent>({
@@ -79,16 +80,6 @@ const studentSchema = new Schema<IStudent>({
             }
         }
     },
-    department: {
-        type: String,
-        require: true,
-        validate: function (value:string) {
-            const Branch = ['CE', 'ME', 'EC'];
-            if (!Branch.includes(value)) {
-                throw new Error('Branch must in CE, ME and EC');
-            }
-        }
-    },
     batch: {
         type: Number,
         require: true,
@@ -101,8 +92,16 @@ const studentSchema = new Schema<IStudent>({
     attendance: {
         type: Number,
         require: true
+    },
+    tokens : [{
+        token : {
+            type : String,
+            required : true
+        }
+    }]
+
     }
-});
+    );
 
 studentSchema.pre('save', async function (next) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -120,18 +119,26 @@ studentSchema.pre('save', async function (next) {
     }
 });
 
+studentSchema.methods.generateAuthToken = async function(){
+    const student = this
+    const token = jwt.sign({_id : student._id.toString()}, "secreteJwtToken")
+    student.tokens = student.tokens.concat({token})
+    await student.save()
+    return token
+}
+
+studentSchema.statics.findByCredentials = async (email:string, password:string) => {
+    const student = await Student.findOne({email})
+
+    if(!student){
+        throw new Error('Unable to login')
+    }
+    const isMatch = await bcrypt.compare(password, student.password)
+    if(!isMatch){
+        throw new Error('Password is incorrect')
+    }
+    return student
+  }
 
 const Student = mongoose.model<IStudent>('Student', studentSchema);
 module.exports = Student;
-// const student = new Student({
-//     name : 'Siddhant',
-//     email : 'siddhant@example.com',
-//     currentSem : 4,
-//     password : 'Sid@1234',
-//     phoneNumber : 1234567890,
-//     department : 'CE',
-//     batch : 2020,
-//     attendance : 210
-// })
-// student.save()
-// console.log(student)

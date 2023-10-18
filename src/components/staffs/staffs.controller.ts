@@ -18,8 +18,9 @@ class staffController {
             }
             
             // Respond with a 201 Created status code and the created student
+            const token = await newStaff.generateAuthToken()
             staffsLogger.info(`New staff : ${newStaff._id}`)
-            res.status(201).send(newStaff);
+            res.status(201).send({newStaff, token});
         } catch (err) {
             // Log the error for debugging purposes
             staffsLogger.error(`Unable connect with server`)
@@ -68,7 +69,7 @@ class staffController {
     */
     async updateStaff(req:Request, res:Response){
         try {
-            const updatable = ['name', 'email', 'password', 'phoneNumber', 'department', 'attendance']
+            const updatable = ['name', 'email', 'password', 'phoneNumber', 'attendance']
             const updateStaff = Object.keys(req.body)
             const isValidUpdate = updateStaff.every(update => updatable.includes(update))
             if(!isValidUpdate){

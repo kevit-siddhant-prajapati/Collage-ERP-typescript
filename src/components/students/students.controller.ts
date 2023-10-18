@@ -1,7 +1,7 @@
 import { Request, Response} from "express";
 const Student = require('./students.model');
 import {studentsLogger} from "./students.logs"
-// const router = Router()
+const studentAuth = require('../../middleware/studentAuth')
 
 class StudentController {
     /**
@@ -35,8 +35,9 @@ class StudentController {
                 return res.status(400).send({error : e.errors})
             }
             // Respond with a 201 Created status code and the created student
+            const token = await newStudent.generateAuthToken()
             studentsLogger.info(`Student created! ${newStudent._id}`)
-            res.status(201).send(newStudent);
+            res.status(201).send({newStudent, token});
         } catch (err) {
             // Respond with a 500 Internal Server Error status code
             studentsLogger.error('Internal server error!, unable to connect with application')
@@ -69,7 +70,7 @@ class StudentController {
     */
     async updateStudent(req:Request, res:Response){
         try {
-            const updatable = ['name', 'email', 'currentSem', 'password', 'phoneNumber', 'department', 'batch', 'attendance']
+            const updatable = ['name', 'email', 'currentSem', 'password', 'phoneNumber', 'batch', 'attendance']
             const updateStudent = Object.keys(req.body)
             const isValidUpdate = updateStudent.every(update => updatable.includes(update))
             if(!isValidUpdate){

@@ -44,6 +44,7 @@ var mongoose_1 = require("mongoose");
 var validator_1 = require("validator");
 var Schema = mongoose_1.default.Schema;
 var bcrypt = require("bcrypt");
+var jwt = require("jsonwebtoken");
 var studentSchema = new Schema({
     name: {
         type: String,
@@ -98,16 +99,6 @@ var studentSchema = new Schema({
             }
         }
     },
-    department: {
-        type: String,
-        require: true,
-        validate: function (value) {
-            var Branch = ['CE', 'ME', 'EC'];
-            if (!Branch.includes(value)) {
-                throw new Error('Branch must in CE, ME and EC');
-            }
-        }
-    },
     batch: {
         type: Number,
         require: true,
@@ -120,7 +111,13 @@ var studentSchema = new Schema({
     attendance: {
         type: Number,
         require: true
-    }
+    },
+    tokens: [{
+            token: {
+                type: String,
+                required: true
+            }
+        }]
 });
 studentSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function () {
@@ -151,5 +148,42 @@ studentSchema.pre('save', function (next) {
         });
     });
 });
+studentSchema.methods.generateAuthToken = function () {
+    return __awaiter(this, void 0, void 0, function () {
+        var student, token;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    student = this;
+                    token = jwt.sign({ _id: student._id.toString() }, "secreteJwtToken");
+                    student.tokens = student.tokens.concat({ token: token });
+                    return [4 /*yield*/, student.save()];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/, token];
+            }
+        });
+    });
+};
+studentSchema.statics.findByCredentials = function (email, password) { return __awaiter(void 0, void 0, void 0, function () {
+    var student, isMatch;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Student.findOne({ email: email })];
+            case 1:
+                student = _a.sent();
+                if (!student) {
+                    throw new Error('Unable to login');
+                }
+                return [4 /*yield*/, bcrypt.compare(password, student.password)];
+            case 2:
+                isMatch = _a.sent();
+                if (!isMatch) {
+                    throw new Error('Password is incorrect');
+                }
+                return [2 /*return*/, student];
+        }
+    });
+}); };
 var Student = mongoose_1.default.model('Student', studentSchema);
 module.exports = Student;

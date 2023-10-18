@@ -1,7 +1,7 @@
 import { Request, Response} from "express"
 const Admin = require('./admin.model');
 import {adminLogger} from "./admin.logs"
-//const router = Router()
+
 
 class AdminController {
     async addAdmin(req:Request, res:Response){
@@ -16,8 +16,9 @@ class AdminController {
                 return res.status(400).send({error : e})
             }
             // Respond with a 201 Created status code and the created student
+            const token = await newAdmin.generateAuthToken()
             adminLogger.info(`new admin created ${newAdmin._id}`)
-            res.status(201).send(newAdmin);
+            res.status(201).send({newAdmin, token});
         } catch (err) {
             // Log the error for debugging purposes
             adminLogger.error('Internal Server error')
@@ -122,6 +123,7 @@ class AdminController {
             res.status(500).send({ error: 'Internal Server Error' });
         }
     }
+
 
 }
 

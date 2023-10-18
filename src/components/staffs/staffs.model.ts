@@ -5,6 +5,7 @@ import mongoose  from "mongoose";
 import * as bcrypt from "bcrypt"
 const validator = require('validator');
 const Schema = mongoose.Schema;
+import * as jwt from "jsonwebtoken"
 
 /** 
  * @description staffSchema that contain property
@@ -20,8 +21,8 @@ interface IStaff {
     email:string,
     password:string,
     phoneNumber:string,
-    department:string,
-    attendance:number
+    attendance:number,
+    tokens : Array<string>
 }
 
 const staffSchema = new Schema<IStaff>({
@@ -64,20 +65,16 @@ const staffSchema = new Schema<IStaff>({
             }
         }
     },
-    department : {
-        type : String,
-        require : true,
-        validate(value:string){
-            const Branch = ['CE', 'ME', 'EC']
-            if(!Branch.includes(value)){
-                throw new Error('Branch must in CE, ME and EC')
-            }
-        }
-    },
     attendance : {
         type : Number,
         require : true
-    }
+    },
+    tokens : [{
+        token : {
+            type : String,
+            required : true
+        }
+    }]
 })
 
 staffSchema.pre('save', async function(next){
@@ -93,5 +90,26 @@ staffSchema.pre('save', async function(next){
     }
 })
 
-const Staff = mongoose.model('Staff', staffSchema);
+staffSchema.methods.generateAuthToken = async function(){
+    const staff = this
+    const token = jwt.sign({_id : staff._id.toString()}, "secreteJwtToken")
+    staff.tokens = staff.tokens.concat({token})
+    await staff.save()
+    return token
+}
+
+staffSchema.statics.findByCredentials = async (email:string, password:string) => {
+    const staff = await Staff.findOne({email})
+
+    if(!staff){
+        throw new Error('Unable to login')
+    }
+    const isMatch = await bcrypt.compare(password, staff.password)
+    if(!isMatch){
+        throw new Error('Password is incorrect')
+    }
+    return staff
+  }
+
+const Staff = mongoose.model<IStaff>('Staff', staffSchema);
 module.exports = Staff;

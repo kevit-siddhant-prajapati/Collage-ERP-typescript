@@ -14,7 +14,9 @@
     "staff.controller": "tsc src/components/staffs/staffs.controller.ts",
     "admin.model": "tsc src/components/admins/admin.model.ts",
     "admin.router": "tsc src/components/admins/admin.router.ts",
-    "admin.controller": "tsc src/components/admins/admin.controller.ts"
+    "admin.controller": "tsc src/components/admins/admin.controller.ts",
+    "user.controller": "tsc src/components/user/user.controller.ts",
+    "user.router": "tsc src/components/user/user.router.ts"
   },
   "husky": {
     "hooks": {
@@ -22,7 +24,11 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write", "git add"]
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -44,6 +50,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.1",
     "husky": "^8.0.3",
+    "jsonwebtoken": "^9.0.2",
     "lint-staged": "^15.0.1",
     "prettier": "^3.0.3"
   }
