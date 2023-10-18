@@ -8,14 +8,14 @@ import { createLogger, format, transports, config } from 'winston';
  * @param transports {Array} - the property that are set while storing log
  * @param levels - set the level of current log
 */
-export let studentsLogger = createLogger({
+export const studentsLogger = createLogger({
     levels: config.syslog.levels,
     transports : [
         new transports.File({ 
             filename: 'logs/students.log' ,
             format: format.combine(
                 format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss'}),
-                format.printf(info => `${info.level} : ${[info.timestamp]} : ${info.message}`)
+                format.printf((info: { level: string; timestamp: string; message: string; }) => `${info.level} : ${[info.timestamp]} : ${info.message}`)
             ),
         })
      ]

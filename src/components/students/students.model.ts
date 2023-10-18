@@ -29,7 +29,7 @@ interface IStudent {
     attendance : number
 }
 
-var studentSchema = new Schema<IStudent>({
+const studentSchema = new Schema<IStudent>({
     name: {
         type: String,
         required: true,
@@ -83,7 +83,7 @@ var studentSchema = new Schema<IStudent>({
         type: String,
         require: true,
         validate: function (value:string) {
-            var Branch = ['CE', 'ME', 'EC'];
+            const Branch = ['CE', 'ME', 'EC'];
             if (!Branch.includes(value)) {
                 throw new Error('Branch must in CE, ME and EC');
             }
@@ -105,6 +105,7 @@ var studentSchema = new Schema<IStudent>({
 });
 
 studentSchema.pre('save', async function (next) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const student = this;
     try {
         
@@ -114,7 +115,7 @@ studentSchema.pre('save', async function (next) {
             console.log(student.password)
         }
         next();
-    } catch (error:any) {
+    } catch (error) {
         next(error);
     }
 });
