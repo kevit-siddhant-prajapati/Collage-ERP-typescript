@@ -42,6 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var Staff = require('./staffs.model');
 var router = (0, express_1.Router)();
+var staffs_logs_1 = require("./staffs.logs");
 router.post('/staff/signup', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var newStaff, e_1, err_1;
     return __generator(this, function (_a) {
@@ -59,16 +60,18 @@ router.post('/staff/signup', function (req, res) { return __awaiter(void 0, void
                 return [3 /*break*/, 4];
             case 3:
                 e_1 = _a.sent();
+                staffs_logs_1.staffsLogger.error("Unable to add new staff");
                 res.status(400).send({ error: e_1 });
                 return [3 /*break*/, 4];
             case 4:
                 // Respond with a 201 Created status code and the created student
+                staffs_logs_1.staffsLogger.info("New staff : ".concat(newStaff._id));
                 res.status(201).send(newStaff);
                 return [3 /*break*/, 6];
             case 5:
                 err_1 = _a.sent();
                 // Log the error for debugging purposes
-                console.log(err_1);
+                staffs_logs_1.staffsLogger.error("Unable connect with server");
                 // Respond with a 500 Internal Server Error status code
                 res.status(500).send({ error: 'Internal Server Error' });
                 return [3 /*break*/, 6];
@@ -77,17 +80,27 @@ router.post('/staff/signup', function (req, res) { return __awaiter(void 0, void
     });
 }); });
 router.get('/staff/me/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var staff;
+    var staff, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Staff.find({ _id: req.params.id })];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, Staff.find({ _id: req.params.id })];
             case 1:
                 staff = _a.sent();
                 if (!staff) {
                     return [2 /*return*/, res.status(404).send({ error: 'staff not exist' })];
                 }
                 res.send(staff);
-                return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                err_2 = _a.sent();
+                // Log the error for debugging purposes
+                staffs_logs_1.staffsLogger.error("Unable connect with server");
+                // Respond with a 500 Internal Server Error status code
+                res.status(500).send({ error: 'Internal Server Error' });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); });
@@ -95,17 +108,28 @@ router.get('/staff/me/:id', function (req, res) { return __awaiter(void 0, void 
  * @describe this get method show all staff that are present in the database
 */
 router.get('/staffs', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var staff;
+    var staff, err_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Staff.find({})];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, Staff.find({})];
             case 1:
                 staff = _a.sent();
                 if (!staff) {
                     return [2 /*return*/, res.status(404).send({ error: 'staff not exist' })];
                 }
                 res.send(staff);
-                return [2 /*return*/];
+                staffs_logs_1.staffsLogger.info("Get details of all staff");
+                return [3 /*break*/, 3];
+            case 2:
+                err_3 = _a.sent();
+                // Log the error for debugging purposes
+                staffs_logs_1.staffsLogger.error("Unable connect with server");
+                // Respond with a 500 Internal Server Error status code
+                res.status(500).send({ error: 'Internal Server Error' });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); });
@@ -114,37 +138,42 @@ router.get('/staffs', function (req, res) { return __awaiter(void 0, void 0, voi
  * it takes json object from postman and update staff
 */
 router.patch('/staff/me/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var updatable, updateStaff, isValidUpdate, staff_1, e_2;
+    var updatable_1, updateStaff, isValidUpdate, staff_1, e_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                updatable = ['name', 'email', 'password', 'phoneNumber', 'department', 'attendance'];
+                _a.trys.push([0, 3, , 4]);
+                updatable_1 = ['name', 'email', 'password', 'phoneNumber', 'department', 'attendance'];
                 updateStaff = Object.keys(req.body);
-                isValidUpdate = updateStaff.every(function (update) { return updatable.includes(update); });
+                isValidUpdate = updateStaff.every(function (update) { return updatable_1.includes(update); });
                 if (!isValidUpdate) {
+                    staffs_logs_1.staffsLogger.info('Not valid request for staff');
                     return [2 /*return*/, res.status(400).send('Not valid update')];
                 }
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 4, , 5]);
                 return [4 /*yield*/, Staff.findById(req.params.id)];
-            case 2:
+            case 1:
                 staff_1 = _a.sent();
                 if (!staff_1) {
+                    staffs_logs_1.staffsLogger.error("Unable to Find Staff of id : ".concat(req.params.id));
                     return [2 /*return*/, res.status(404).send('This type of Student not found')];
                 }
                 updateStaff.forEach(function (update) {
                     staff_1[update] = req.body[update];
                 });
                 return [4 /*yield*/, staff_1.save()];
-            case 3:
+            case 2:
                 _a.sent();
+                staffs_logs_1.staffsLogger.info("Updated Successfuly! staff : ".concat(staff_1._id));
                 res.send(staff_1);
-                return [3 /*break*/, 5];
-            case 4:
+                return [3 /*break*/, 4];
+            case 3:
                 e_2 = _a.sent();
-                return [2 /*return*/, res.status(400).send(e_2)];
-            case 5: return [2 /*return*/];
+                // Log the error for debugging purposes
+                staffs_logs_1.staffsLogger.error("Unable connect with server");
+                // Respond with a 500 Internal Server Error status code
+                res.status(500).send({ error: 'Internal Server Error' });
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
@@ -163,16 +192,21 @@ router.delete('/staff/me/:id', function (req, res) { return __awaiter(void 0, vo
                 console.log(req.params.id);
                 console.log(staff);
                 if (!staff) {
+                    staffs_logs_1.staffsLogger.error("Unable to Find Staff of id : ".concat(req.params.id));
                     return [2 /*return*/, res.status(404).send('Given Student is not exist.')];
                 }
                 return [4 /*yield*/, Staff.deleteOne({ _id: staff._id })];
             case 2:
                 _a.sent();
+                staffs_logs_1.staffsLogger.info("Staff deleted successfully of id : ".concat(req.params.id));
                 res.send(staff);
                 return [3 /*break*/, 4];
             case 3:
                 e_3 = _a.sent();
-                res.status(500).send('Something went wrong :( ');
+                // Log the error for debugging purposes
+                staffs_logs_1.staffsLogger.error("Unable connect with server");
+                // Respond with a 500 Internal Server Error status code
+                res.status(500).send({ error: 'Internal Server Error' });
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }

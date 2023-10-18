@@ -1,60 +1,70 @@
 /**
  * @description this file contains router for admin
  */
-import * as express from 'express'
-import mongoose from 'mongoose';
-//const express = require('express');
+import { Router, Request, Response} from "express"
 const Admin = require('./admin.model');
+import {adminLogger} from "./admin.logs"
+const router = Router()
 
-const router = express.Router()
 
-
-router.post('/admin/signup', async (req, res) => {
+router.post('/admin/signup', async (req:Request, res:Response) => {
     try {
         // Validate request data here if needed
-        const {name, email, password} = req.body;
-        const newAdmin = new Admin({
-            name,
-            email,
-            password
-        });
+        const newAdmin = new Admin(req.body);
         console.log('This is status of student',newAdmin)
         try{
             await newAdmin.save()
         }catch(e){
+            adminLogger.error(`Unable to create admin`)
             return res.status(400).send({error : e})
         }
-        
         // Respond with a 201 Created status code and the created student
+        adminLogger.info(`new admin created ${newAdmin._id}`)
         res.status(201).send(newAdmin);
     } catch (err) {
         // Log the error for debugging purposes
-        console.log(err)
-
+        adminLogger.error('Internal Server error')
         // Respond with a 500 Internal Server Error status code
         res.status(500).send({ error: 'Internal Server Error' });
     }
 });
 
-router.get('/admin/me/:id', async (req, res) => {
-    //console.log(req.params.id)
-    const admin = await Admin.find({_id : req.params.id})
-    if(!admin){
-        return res.status(404).send({error : 'staff not exist'})
+router.get('/admin/me/:id', async (req:Request, res:Response) => {
+    try {
+        const admin = await Admin.find({_id : req.params.id})
+        if(!admin){
+            adminLogger.error(`Given ${req.params.id} not exist`)
+            return res.status(404).send({error : 'staff not exist'})
+        }
+        adminLogger.info(`Get admin profile of ${req.params.id}`)
+        res.send(admin)   
+    } catch (err) {
+        // Log the error for debugging purposes
+        adminLogger.error('Internal Server error')
+        // Respond with a 500 Internal Server Error status code
+        res.status(500).send({ error: 'Internal Server Error' });
     }
-    res.send(admin)    
 })
 
 /** 
  * @describe this get method show all staff that are present in the database
 */
-router.get('/admins', async (req, res) => {
-    //console.log(req.params.id)
-    const admin = await Admin.find({})
-    if(!admin){
-        return res.status(404).send({error : 'staff not exist'})
+router.get('/admins', async (req:Request, res:Response) => {
+    try {
+        const admin = await Admin.find({})
+        if(!admin){
+            adminLogger.error(`Unable to fetch details of all admins`)
+            return res.status(404).send({error : 'staff not exist'})
+        }
+        adminLogger.info(`Getting data of all admin`)
+        res.send(admin)  
+    } catch(err){
+        // Log the error for debugging purposes
+        adminLogger.error('Internal Server error')
+        // Respond with a 500 Internal Server Error status code
+        res.status(500).send({ error: 'Internal Server Error' });
     }
-    res.send(admin)    
+      
 })
 
 
@@ -63,43 +73,59 @@ router.get('/admins', async (req, res) => {
  * @description below given router is useful to update details of logged student
  * it takes json object from postman and update student
 */
-router.patch('/admin/me/:id', async (req, res) => {
-    const updatable = ['name', 'email', 'password']
-    const updateAdmin = Object.keys(req.body)
-    const isValidUpdate = updateAdmin.every(update => updatable.includes(update))
-    if(!isValidUpdate){
-        return res.status(400).send('Not valid update')
-    }
+router.patch('/admin/me/:id', async (req:Request, res:Response) => {
     try {
-        const admin = await Admin.findById(req.params.id)
-        if(!admin){
-            return res.status(404).send('This type of Student not found')
+        const updatable = ['name', 'email', 'password']
+        const updateAdmin = Object.keys(req.body)
+        const isValidUpdate = updateAdmin.every(update => updatable.includes(update))
+        if(!isValidUpdate){
+            adminLogger.error('Not valid update for admin')
+            return res.status(400).send('Not valid update')
         }
-        updateAdmin.forEach(update => {
-            admin[update] = req.body[update] 
-        })
-        await admin.save()
-        res.send(admin)
-    } catch( e ){
-        return res.status(400).send(e)
+        try {
+            const admin = await Admin.findById(req.params.id)
+            if(!admin){
+                adminLogger.error(`Unable to find data of ${req.params.id} admin`)
+                return res.status(404).send('This type of Student not found')
+            }
+            updateAdmin.forEach(update => {
+                admin[update] = req.body[update] 
+            })
+            await admin.save()
+            adminLogger.info(`Admin updated successfully of adminId : ${admin._id}`)
+            res.send(admin)
+        } catch( e ){
+            adminLogger.error('Unable to do update in admin')
+            return res.status(400).send(e)
+        }
+    } catch (err){
+        // Log the error for debugging purposes
+        adminLogger.error('Internal Server error')
+        // Respond with a 500 Internal Server Error status code
+        res.status(500).send({ error: 'Internal Server Error' });
     }
 })
 
 /**
  * @description This below router delete the logged Student
 */
-router.delete('/admin/me/:id', async(req, res)=>{
+router.delete('/admin/me/:id', async(req:Request, res:Response)=>{
     try {
         const admin = await Admin.findById(req.params.id)
         console.log(req.params.id)
         console.log(admin)
         if(!admin){
+            adminLogger.error(`Given admin not exit adminId : ${req.params.id}`)
             return res.status(404).send('Given Student is not exist.')
         }
         await Admin.deleteOne({_id : admin._id})
+        adminLogger.info(`Admin deleted successfully of adminId`)
         res.send(admin)
     } catch ( e ){
-        res.status(500).send('Something went wrong :( ')
+        // Log the error for debugging purposes
+        adminLogger.error('Internal Server error')
+        // Respond with a 500 Internal Server Error status code
+        res.status(500).send({ error: 'Internal Server Error' });
     }
 })
 

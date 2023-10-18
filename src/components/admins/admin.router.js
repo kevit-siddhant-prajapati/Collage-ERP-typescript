@@ -39,41 +39,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @description this file contains router for admin
  */
-var express = require("express");
-//const express = require('express');
+var express_1 = require("express");
 var Admin = require('./admin.model');
-var router = express.Router();
+var admin_logs_1 = require("./admin.logs");
+var router = (0, express_1.Router)();
 router.post('/admin/signup', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, name_1, email, password, newAdmin, e_1, err_1;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var newAdmin, e_1, err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                _b.trys.push([0, 5, , 6]);
-                _a = req.body, name_1 = _a.name, email = _a.email, password = _a.password;
-                newAdmin = new Admin({
-                    name: name_1,
-                    email: email,
-                    password: password
-                });
+                _a.trys.push([0, 5, , 6]);
+                newAdmin = new Admin(req.body);
                 console.log('This is status of student', newAdmin);
-                _b.label = 1;
+                _a.label = 1;
             case 1:
-                _b.trys.push([1, 3, , 4]);
+                _a.trys.push([1, 3, , 4]);
                 return [4 /*yield*/, newAdmin.save()];
             case 2:
-                _b.sent();
+                _a.sent();
                 return [3 /*break*/, 4];
             case 3:
-                e_1 = _b.sent();
+                e_1 = _a.sent();
+                admin_logs_1.adminLogger.error("Unable to create admin");
                 return [2 /*return*/, res.status(400).send({ error: e_1 })];
             case 4:
                 // Respond with a 201 Created status code and the created student
+                admin_logs_1.adminLogger.info("new admin created ".concat(newAdmin._id));
                 res.status(201).send(newAdmin);
                 return [3 /*break*/, 6];
             case 5:
-                err_1 = _b.sent();
+                err_1 = _a.sent();
                 // Log the error for debugging purposes
-                console.log(err_1);
+                admin_logs_1.adminLogger.error('Internal Server error');
                 // Respond with a 500 Internal Server Error status code
                 res.status(500).send({ error: 'Internal Server Error' });
                 return [3 /*break*/, 6];
@@ -82,17 +79,29 @@ router.post('/admin/signup', function (req, res) { return __awaiter(void 0, void
     });
 }); });
 router.get('/admin/me/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var admin;
+    var admin, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Admin.find({ _id: req.params.id })];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, Admin.find({ _id: req.params.id })];
             case 1:
                 admin = _a.sent();
                 if (!admin) {
+                    admin_logs_1.adminLogger.error("Given ".concat(req.params.id, " not exist"));
                     return [2 /*return*/, res.status(404).send({ error: 'staff not exist' })];
                 }
+                admin_logs_1.adminLogger.info("Get admin profile of ".concat(req.params.id));
                 res.send(admin);
-                return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                err_2 = _a.sent();
+                // Log the error for debugging purposes
+                admin_logs_1.adminLogger.error('Internal Server error');
+                // Respond with a 500 Internal Server Error status code
+                res.status(500).send({ error: 'Internal Server Error' });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); });
@@ -100,17 +109,29 @@ router.get('/admin/me/:id', function (req, res) { return __awaiter(void 0, void 
  * @describe this get method show all staff that are present in the database
 */
 router.get('/admins', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var admin;
+    var admin, err_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Admin.find({})];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, Admin.find({})];
             case 1:
                 admin = _a.sent();
                 if (!admin) {
+                    admin_logs_1.adminLogger.error("Unable to fetch details of all admins");
                     return [2 /*return*/, res.status(404).send({ error: 'staff not exist' })];
                 }
+                admin_logs_1.adminLogger.info("Getting data of all admin");
                 res.send(admin);
-                return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                err_3 = _a.sent();
+                // Log the error for debugging purposes
+                admin_logs_1.adminLogger.error('Internal Server error');
+                // Respond with a 500 Internal Server Error status code
+                res.status(500).send({ error: 'Internal Server Error' });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); });
@@ -119,14 +140,16 @@ router.get('/admins', function (req, res) { return __awaiter(void 0, void 0, voi
  * it takes json object from postman and update student
 */
 router.patch('/admin/me/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var updatable, updateAdmin, isValidUpdate, admin_1, e_2;
+    var updatable_1, updateAdmin, isValidUpdate, admin_1, e_2, err_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                updatable = ['name', 'email', 'password'];
+                _a.trys.push([0, 6, , 7]);
+                updatable_1 = ['name', 'email', 'password'];
                 updateAdmin = Object.keys(req.body);
-                isValidUpdate = updateAdmin.every(function (update) { return updatable.includes(update); });
+                isValidUpdate = updateAdmin.every(function (update) { return updatable_1.includes(update); });
                 if (!isValidUpdate) {
+                    admin_logs_1.adminLogger.error('Not valid update for admin');
                     return [2 /*return*/, res.status(400).send('Not valid update')];
                 }
                 _a.label = 1;
@@ -136,6 +159,7 @@ router.patch('/admin/me/:id', function (req, res) { return __awaiter(void 0, voi
             case 2:
                 admin_1 = _a.sent();
                 if (!admin_1) {
+                    admin_logs_1.adminLogger.error("Unable to find data of ".concat(req.params.id, " admin"));
                     return [2 /*return*/, res.status(404).send('This type of Student not found')];
                 }
                 updateAdmin.forEach(function (update) {
@@ -144,12 +168,22 @@ router.patch('/admin/me/:id', function (req, res) { return __awaiter(void 0, voi
                 return [4 /*yield*/, admin_1.save()];
             case 3:
                 _a.sent();
+                admin_logs_1.adminLogger.info("Admin updated successfully of adminId : ".concat(admin_1._id));
                 res.send(admin_1);
                 return [3 /*break*/, 5];
             case 4:
                 e_2 = _a.sent();
+                admin_logs_1.adminLogger.error('Unable to do update in admin');
                 return [2 /*return*/, res.status(400).send(e_2)];
-            case 5: return [2 /*return*/];
+            case 5: return [3 /*break*/, 7];
+            case 6:
+                err_4 = _a.sent();
+                // Log the error for debugging purposes
+                admin_logs_1.adminLogger.error('Internal Server error');
+                // Respond with a 500 Internal Server Error status code
+                res.status(500).send({ error: 'Internal Server Error' });
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/];
         }
     });
 }); });
@@ -168,16 +202,21 @@ router.delete('/admin/me/:id', function (req, res) { return __awaiter(void 0, vo
                 console.log(req.params.id);
                 console.log(admin);
                 if (!admin) {
+                    admin_logs_1.adminLogger.error("Given admin not exit adminId : ".concat(req.params.id));
                     return [2 /*return*/, res.status(404).send('Given Student is not exist.')];
                 }
                 return [4 /*yield*/, Admin.deleteOne({ _id: admin._id })];
             case 2:
                 _a.sent();
+                admin_logs_1.adminLogger.info("Admin deleted successfully of adminId");
                 res.send(admin);
                 return [3 /*break*/, 4];
             case 3:
                 e_3 = _a.sent();
-                res.status(500).send('Something went wrong :( ');
+                // Log the error for debugging purposes
+                admin_logs_1.adminLogger.error('Internal Server error');
+                // Respond with a 500 Internal Server Error status code
+                res.status(500).send({ error: 'Internal Server Error' });
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
