@@ -4,9 +4,9 @@ import * as express from 'express';
 const app:express.Application = express()
 const PORT = process.env.PORT || 3000;
 
-const studentRouter = require('./components/students/students.router')
-const staffRouter = require('./components/staffs/staffs.router')
-const adminRouter = require('./components/admins/admin.router')
+import studentRouter from './components/students/students.router';
+import staffRouter from './components/staffs/staffs.router';
+import adminRouter from './components/admins/admin.router';
 
 app.use(express.json())
 app.use(studentRouter)
