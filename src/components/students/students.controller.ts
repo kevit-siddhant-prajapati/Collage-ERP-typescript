@@ -82,7 +82,7 @@ class StudentController {
     */
     async updateStudent(req:Request, res:Response){
         try {
-            const updatable = ['name', 'email', 'currentSem', 'password', 'phoneNumber', 'batch', 'attendance']
+            const updatable = ['name', 'email', 'currentSem', 'password', 'phoneNumber', 'batch', 'attendance', 'department']
             const updateStudent = Object.keys(req.body)
             const isValidUpdate = updateStudent.every(update => updatable.includes(update))
             if(!isValidUpdate){
@@ -162,12 +162,9 @@ class StudentController {
         if(!student){
             throw new Error('Invalid username or password')
         }
-        //console.log(student)     --it is work
         const token = await student.generateAuthToken()
-        //console.log(token)        --is works
         return res.send({user: student, token})
     }
-    //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTJmYTY1Njc2Y2NlNjA5Y2M2ZTlmNmEiLCJpYXQiOjE2OTc3NzM3Njh9.NrJGuaanxHOm2KEthm4HGl7UYT1XqDvJRrHWqoS5Eck
 }
 
 export default StudentController

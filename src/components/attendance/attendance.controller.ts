@@ -2,20 +2,65 @@ import { Request, Response } from "express";
 const Attendance = require('./attendance.model')
 import { staffsLogger } from "../staffs/staffs.logs";
 import { studentsLogger } from "../students/students.logs";
+const Student = require('../students/students.model')
+const Staff = require('../staffs/staffs.model')
 
 class AttendanceController {
 
     async fillStudentAttendance(req:Request, res:Response){
         try {
-            console.log("fillStudentAttendance is call")
-            const newAttendance = new Attendance(req.body)
-            console.log(req.body)
-            try {
-                await newAttendance.save()
-            } catch (err){
-                return res.status(400).send(`Unable to fill student attendance ${err}`)
+            const attendStudent = req.body.attendance;
+    
+            for (const attendie of attendStudent) {
+                const student = await Student.findById(attendie);
+                if (student) {
+                    student.attendance += 1;
+
+                    // there is change
+                    const attendanceDetail = {
+                        status : true,
+                        date : req.body.date,
+                        userId : student._id,
+                        roleOfUser : "Student"
+                    }
+                    const newAttendance = new Attendance(attendanceDetail)
+
+                    //there is change
+                    //console.log(req.body)
+                    try {
+                        await newAttendance.save()
+                    } catch (err){
+                        return res.status(400).send(`Unable to fill student attendance ${err}`)
+                    }
+                    // res.status(201).send(newAttendance)
+
+                    await student.save();
+                    studentsLogger.info(`Attendance filled : ${student._id}`)
+                } 
+                const notAttendStudent = await Staff.findById({ $ne :attendie});
+                if(notAttendStudent){
+                    const attendanceDetail = {
+                        status : false,
+                        date : req.body.date,
+                        userId : notAttendStudent._id,
+                        roleOfUser : "Student"
+                    }
+                    const newAttendance = new Attendance(attendanceDetail)
+
+                    //there is change
+                    //console.log(req.body)
+                    try {
+                        await newAttendance.save()
+                    } catch (err){
+                        return res.status(400).send(`Unable to fill student attendance ${err}`)
+                    }
+                    //res.status(201).send(newAttendance)
+                    await student.save();
+                    studentsLogger.info(`Attendance filled : ${notAttendStudent._id}`)
+                }
             }
-            res.status(201).send(newAttendance)
+            studentsLogger.info('Filled attendance of given Students')
+            res.status(201).send("Filled Attendance of all student")
         } catch( e ){
             res.status(500).send({error : e})
         }
@@ -23,19 +68,57 @@ class AttendanceController {
 
     async fillStaffAttendance(req:Request, res:Response){
         try {
-            //console.log("fillStaffAttendance is call")
-            
-            const newdate = new Date(req.body.date)
-            req.body.date = newdate
-            console.log(newdate)
-            const newAttendance = new Attendance(req.body)
-            //console.log(req.body)
-            try {
-                await newAttendance.save()
-            } catch (err){
-                return res.status(400).send(`Unable to fill staff attendance ${err}`)
+            const attendStaff = req.body.attendance;
+    
+            for (const attendie of attendStaff) {
+                const staff = await Staff.findById(attendie);
+                if (staff) {
+                    staff.attendance += 1;
+
+                    // there is change
+                    const attendanceDetail = {
+                        status : true,
+                        date : req.body.date,
+                        userId : staff._id,
+                        roleOfUser : "Staff"
+                    }
+                    const newAttendance = new Attendance(attendanceDetail)
+
+                    //there is change
+                    //console.log(req.body)
+                    try {
+                        await newAttendance.save()
+                    } catch (err){
+                        return res.status(400).send(`Unable to fill student attendance ${err}`)
+                    }
+                    // res.status(201).send(newAttendance)
+
+                    await staff.save();
+                    staffsLogger.info(`Attendance filled : ${staff._id}`)
+                } 
+                const notAttendStaff = await Staff.findById({ $ne :attendie});
+                if(notAttendStaff){
+                    
+                    const attendanceDetail = {
+                        status : false,
+                        date : req.body.date,
+                        userId : notAttendStaff._id,
+                        roleOfUser : "Staff"
+                    }
+                    const newAttendance = new Attendance(attendanceDetail)
+
+                    try {
+                        await newAttendance.save()
+                    } catch (err){
+                        return res.status(400).send(`Unable to fill staff attendance ${err}`)
+                    }
+                    //res.status(201).send(newAttendance)
+                    await staff.save();
+                    staffsLogger.info(`Attendance filled : ${staff._id}`)
+                }
             }
-            res.status(201).send(newAttendance)
+            studentsLogger.info('Filled attendance of given Staffs')
+            res.status(201).send("Filled Attendance of all staffs")
         } catch( e ){
             res.status(500).send({error : e})
         }
@@ -43,7 +126,7 @@ class AttendanceController {
 
     async manageStudentAttendance(req:Request, res:Response){
         try {
-            const updatable = ['status', 'Role']
+            const updatable = ['status', 'Role', 'date']
             const updateStudentAttendance = Object.keys(req.body)
             const isValidUpdate = updateStudentAttendance.every(update => updatable.includes(update))
             if(!isValidUpdate){
@@ -73,7 +156,7 @@ class AttendanceController {
 
     async manageStaffAttendance(req:Request, res:Response){
         try {
-            const updatable = ['status', 'Role']
+            const updatable = ['status', 'Role', 'date']
             const updateStaffAttendance = Object.keys(req.body)
             const isValidUpdate = updateStaffAttendance.every(update => updatable.includes(update))
             if(!isValidUpdate){

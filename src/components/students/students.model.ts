@@ -26,6 +26,7 @@ interface IStudent {
     password:string,
     phoneNumber : string,
     batch : number,
+    department : string,
     attendance : number,
     tokens : Array<string>
 }
@@ -86,6 +87,16 @@ const studentSchema = new Schema<IStudent>({
         validate: function (value:number) {
             if (value < 2000 || value > 3000) {
                 throw new Error('Enter valid batch');
+            }
+        }
+    },
+    department: {
+        type: String,
+        require: true,
+        validate: function (value:string) {
+            const Branch = ['CE', 'ME', 'EC'];
+            if (!Branch.includes(value)) {
+                throw new Error('Branch must in CE, ME and EC');
             }
         }
     },
