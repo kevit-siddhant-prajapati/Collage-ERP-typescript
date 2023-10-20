@@ -23,14 +23,17 @@ class StudentController {
         } 
     }
 
+    /**
+     * @description below given router is use to create new student
+     * it takes data from request and into database
+    */
     async postStudent(req:Request, res:Response) {
         try {
             // Validate request data here if needed
-            
             const newStudent = new Student(req.body);
             try{
                 await newStudent.save()
-            }catch(e:any){
+            }catch(e){
                 studentsLogger.error(`Unable to create student! error=${e}`)
                 return res.status(400).send({error : e.errors})
             }
@@ -51,16 +54,25 @@ class StudentController {
     */
     async getStudentProfile(req:Request, res:Response){
         try {
-            const student = await Student.find({_id : req.params.id})
-            if(!student){
-                studentsLogger.error(`${req.params._id} - this student not found`)
-                return res.status(404).send({error : 'student not exist'})
-            }
-            res.status(200).send(student)  
-            studentsLogger.info(`Getting the profile of student ${student._id}`)  
+            const token = req.header('Authorization').replace('Bearer ','');
+            //console.log(token)
+            const student = await Student.find({'tokens.token':token})
+            const authenticatedStudent = student;
+
+            console.log(authenticatedStudent); // Print authenticated student data
+
+            // You may want to use the authenticated student data to retrieve the profile
+            // For example, if the student ID is in authenticatedStudent._id
+            // const studentProfile = await Student.findById(authenticatedStudent._id);
+
+            // Send the student profile as the response
+            res.status(200).send(authenticatedStudent);
+
+            // Log information about getting the student profile
+            studentsLogger.info(`Getting the profile of student ${authenticatedStudent._id}`); 
         } catch (error) {
             studentsLogger.error('Internal server error!, unable to connect with application')
-            res.status(500).send({ error: 'Internal Server Error' });
+            res.status(500).send({ error: `Internal Server Error ${error}`});
         }
     }
 
@@ -144,6 +156,18 @@ class StudentController {
             res.status(500).send({ error: 'Internal Server Error' });
         }
     }
+
+    async studentLogin(req:Request, res:Response){
+        const student =  await Student.findByCredentials(req.body.email , req.body.password)
+        if(!student){
+            throw new Error('Invalid username or password')
+        }
+        //console.log(student)     --it is work
+        const token = await student.generateAuthToken()
+        //console.log(token)        --is works
+        return res.send({user: student, token})
+    }
+    //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTJmYTY1Njc2Y2NlNjA5Y2M2ZTlmNmEiLCJpYXQiOjE2OTc3NzM3Njh9.NrJGuaanxHOm2KEthm4HGl7UYT1XqDvJRrHWqoS5Eck
 }
 
 export default StudentController

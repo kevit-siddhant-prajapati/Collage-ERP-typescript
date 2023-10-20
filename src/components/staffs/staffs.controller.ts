@@ -31,7 +31,8 @@ class staffController {
 
     async getStaffProfile(req:Request, res: Response) {
         try {
-            const staff = await Staff.find({_id : req.params.id})
+            const token = req.header('Authorization').replace('Bearer ','');
+            const staff = await Staff.find({'tokens.token':token})
             if(!staff){
                 return res.status(404).send({error : 'staff not exist'})
             }
@@ -116,6 +117,17 @@ class staffController {
             // Respond with a 500 Internal Server Error status code
             res.status(500).send({ error: 'Internal Server Error' });
         }
+    }
+
+    async staffLogin(req:Request, res:Response){
+        console.log('Staff login is call')
+        const staff =  await Staff.findByCredentials(req.body.email , req.body.password)
+        console.log(staff)
+        if(!staff){
+            throw new Error('Invalid username or password')
+        }
+        const token = await staff.generateAuthToken()
+        return res.send({user: staff, token})
     }
 }
 

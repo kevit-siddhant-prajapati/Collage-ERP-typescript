@@ -29,7 +29,8 @@ class AdminController {
 
     async getAdminProfile(req:Request, res:Response){
         try {
-            const admin = await Admin.find({_id : req.params.id})
+            const token = req.header('Authorization').replace('Bearer ','');
+            const admin = await Admin.find({'tokens.token':token})
             if(!admin){
                 adminLogger.error(`Given ${req.params.id} not exist`)
                 return res.status(404).send({error : 'staff not exist'})
@@ -124,6 +125,16 @@ class AdminController {
         }
     }
 
+    async adminLogin(req:Request, res:Response){
+        console.log('Staff login is call')
+        const admin =  await Admin.findByCredentials(req.body.email , req.body.password)
+        console.log(admin)
+        if(!admin){
+            throw new Error('Invalid username or password')
+        }
+        const token = await admin.generateAuthToken()
+        return res.send({user: admin, token})
+    }
 
 }
 

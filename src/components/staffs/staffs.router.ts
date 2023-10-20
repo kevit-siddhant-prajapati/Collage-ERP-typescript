@@ -4,6 +4,8 @@
 import { Router} from "express"
 require('../../../bin/database')
 import StaffController from "./staffs.controller";
+import staffAuth from "../../middleware/staffAuth";
+import adminAuth from "../../middleware/adminAuth";
 
 class StaffRoute {
 
@@ -17,11 +19,12 @@ class StaffRoute {
     }
 
     initializeRoutes():void {
-        this.router.post('/staff/signup', this.staffController.postStaff)
-        this.router.get('/staff/me/:id', this.staffController.getStaffProfile)
-        this.router.get('/staffs', this.staffController.getStaffs)
-        this.router.patch('/staff/me/:id', this.staffController.updateStaff)
-        this.router.delete('/staff/me/:id', this.staffController.deleteStaff)
+        this.router.post('/staff/signup', adminAuth, this.staffController.postStaff)
+        this.router.get('/staff/me', staffAuth, this.staffController.getStaffProfile)
+        this.router.get('/staffs', staffAuth, this.staffController.getStaffs)
+        this.router.patch('/staff/me/:id', adminAuth, this.staffController.updateStaff)
+        this.router.delete('/staff/me/:id', adminAuth, this.staffController.deleteStaff)
+        this.router.post('/staff/login', this.staffController.staffLogin)
     }
 }
 

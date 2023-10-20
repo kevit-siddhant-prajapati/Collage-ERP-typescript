@@ -5,18 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/app.js",
-    "student.model": "tsc src/components/students/students.model.ts",
-    "student.router": "tsc src/components/students/students.router.ts",
-    "student.controller": "tsc src/components/students/students.controller.ts",
-    "staff.model": "tsc src/components/staffs/staffs.model.ts",
-    "staff.router": "tsc src/components/staffs/staffs.router.ts",
-    "staff.controller": "tsc src/components/staffs/staffs.controller.ts",
-    "admin.model": "tsc src/components/admins/admin.model.ts",
-    "admin.router": "tsc src/components/admins/admin.router.ts",
-    "admin.controller": "tsc src/components/admins/admin.controller.ts",
-    "user.controller": "tsc src/components/user/user.controller.ts",
-    "user.router": "tsc src/components/user/user.router.ts"
+    "build":"tsc",
+    "start": "npm run build && nodemon lib/app.js"
   },
   "husky": {
     "hooks": {

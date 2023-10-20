@@ -103,6 +103,12 @@ const studentSchema = new Schema<IStudent>({
     }
     );
 
+    // studentSchema.virtual('attendance', {
+    //     ref : 'Attendance',
+    //     localField : '_id',
+    //     foreignField : 'userId'
+    //   })
+
 studentSchema.pre('save', async function (next) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const student = this;
@@ -123,6 +129,7 @@ studentSchema.methods.generateAuthToken = async function(){
     const student = this
     const token = jwt.sign({_id : student._id.toString()}, "secreteJwtToken")
     student.tokens = student.tokens.concat({token})
+    //console.log(`token of model ${token}`)
     await student.save()
     return token
 }

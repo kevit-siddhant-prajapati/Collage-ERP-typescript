@@ -64,6 +64,8 @@ const adminSchema = new Schema<IAdmin>({
     }]
 })
 
+
+
 adminSchema.pre('save', async function(next){
     const admin = this
     try {
@@ -79,7 +81,7 @@ adminSchema.pre('save', async function(next){
 
 adminSchema.statics.findByCredentials = async (email:string, password:string) => {
     const admin = await Admin.findOne({email})
-    console.log(`email : ${email} & password : ${password}`)
+    //console.log(`email : ${email} & password : ${password}`)
     if(!admin){
         throw new Error('Unable to login')
     }

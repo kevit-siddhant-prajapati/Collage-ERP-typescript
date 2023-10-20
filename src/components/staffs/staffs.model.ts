@@ -77,6 +77,12 @@ const staffSchema = new Schema<IStaff>({
     }]
 })
 
+// staffSchema.virtual('attendance', {
+//     ref : 'Attendance',
+//     localField : '_id',
+//     foreignField : 'userId'
+//   })
+
 staffSchema.pre('save', async function(next){
     const staff = this
     try {
@@ -99,8 +105,9 @@ staffSchema.methods.generateAuthToken = async function(){
 }
 
 staffSchema.statics.findByCredentials = async (email:string, password:string) => {
+    console.log(email)
     const staff = await Staff.findOne({email})
-
+    
     if(!staff){
         throw new Error('Unable to login')
     }
