@@ -25,6 +25,7 @@ const dotenv = require('dotenv')
 const path = require("path")
 const envPath = path.resolve(__dirname, '..', '..', '..','config', 'dev.env');
 const result = dotenv.config({path : envPath})
+//const Attendance = require("../attendance/attendance.model")
 if (result.error) {
     throw result.error;
   }
@@ -125,10 +126,10 @@ const studentSchema = new Schema<IStudent>({
     );
 
     // studentSchema.virtual('attendance', {
-    //     ref : 'Attendance',
+    //     ref : Attendance,
     //     localField : '_id',
     //     foreignField : 'userId'
-    //   })
+    //   }) 
 
 studentSchema.pre('save', async function (next) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -145,6 +146,15 @@ studentSchema.pre('save', async function (next) {
         next(error);
     }
 });
+
+studentSchema.methods.getPublicProfile = function (){
+    const student = this
+    const studentObject = student.toObject()
+
+    delete studentObject.password
+    delete studentObject.tokens
+    return studentObject
+  }
 
 studentSchema.methods.generateAuthToken = async function(){
     const student = this

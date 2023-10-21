@@ -148,7 +148,7 @@ class AdminController {
             res.status(500).send()
         }
     }
-
+    
 }
 
 export default AdminController

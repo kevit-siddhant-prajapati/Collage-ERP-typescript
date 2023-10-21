@@ -30,12 +30,10 @@ class StudentRoute {
         this.router.delete('/student/me/:id', staffAuth, this.studentController.deleteStudent)
         this.router.post('/student/login',this.studentController.studentLogin)
         this.router.post('/student/logout', studentAuth,this.studentController.studentLogout)
-
+        this.router.get('/studentGroupByYear/analysis1', adminAuth, this.studentController.studentGroupByYear)
+        
     }
 }
 
 export default new StudentRoute().router;
 
-
-
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTJmYTY1Njc2Y2NlNjA5Y2M2ZTlmNmEiLCJpYXQiOjE2OTc3MTY4OTV9.KQq9qKcMySfaEu9jA8t35Gx_FVpTXh6aL5R_ZNobHZ0

@@ -40,7 +40,7 @@ class StudentController {
             // Respond with a 201 Created status code and the created student
             const token = await newStudent.generateAuthToken()
             studentsLogger.info(`Student created! ${newStudent._id}`)
-            res.status(201).send({newStudent, token});
+            res.status(201).send({newStudent : newStudent, token});
         } catch (err) {
             // Respond with a 500 Internal Server Error status code
             studentsLogger.error('Internal server error!, unable to connect with application')
@@ -56,7 +56,7 @@ class StudentController {
         try {
             const token = req.header('Authorization').replace('Bearer ','');
             //console.log(token)
-            const student = await Student.find({'tokens.token':token})
+            const student = await Student.find({'tokens.token':token},{password : 0 , tokens : 0})
             const authenticatedStudent = student;
 
             console.log(authenticatedStudent); // Print authenticated student data
@@ -136,7 +136,7 @@ class StudentController {
             req.student.tokens = req.student.tokens.filter((token) => {
                 return token.token !== req.token
             })
-            await req.student.save()
+            await req.student.save("Logout successfully")
             res.send()
         } catch (e) {
             res.status(500).send()
@@ -150,8 +150,60 @@ class StudentController {
             throw new Error('Invalid username or password')
         }
         const token = await student.generateAuthToken()
-        return res.send({user: student, token})
+        return res.send({user: student.getPublicProfile(), token})
     }
+
+    /**
+     * @description below given find the analysis 
+     *  Analysis : Analytics which gives an idea about the total number of students in a particular 
+     *             year and the total number of students in a particular branch for that year
+    */
+   async studentGroupByYear(req:Request, res:Response){
+    try {
+        const student = await Student.aggregate([
+            {
+              $group: {
+                _id: {
+                  year: "$batch",
+                  department: "$department"
+                },
+                totalStudents: { $sum: 1 }
+              }
+            },
+            {
+              $group: {
+                _id: "$_id.year",
+                totalStudents: { $sum: "$totalStudents" },
+                branches: {
+                  $push: {
+                    k: "$_id.department",
+                    v: "$totalStudents"
+                  }
+                }
+              }
+            },
+            {
+              $project: {
+                _id: 0,
+                year: "$_id",
+                totalStudents: 1,
+                branches: { $arrayToObject: "$branches" }
+              }
+            }
+        ])
+    
+        if(!student) {
+            studentsLogger.error('Data for analysis 1 not get')
+            return res.status(404).send('Data not found');
+        }
+        res.status(200).send(student)
+    } catch (e){
+        studentsLogger.error('enable to get Analysis 1 details')
+        res.status(500).send('Internal Server Error!')
+    }
+   }
+
+   
 }
 
 export default StudentController
