@@ -25,6 +25,7 @@ class StaffRoute {
         this.router.patch('/staff/me/:id', adminAuth, this.staffController.updateStaff)
         this.router.delete('/staff/me/:id', adminAuth, this.staffController.deleteStaff)
         this.router.post('/staff/login', this.staffController.staffLogin)
+        this.router.post('/staff/logout', staffAuth,this.staffController.staffLogout)
     }
 }
 

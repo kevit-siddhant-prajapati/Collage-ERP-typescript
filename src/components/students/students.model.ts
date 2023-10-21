@@ -19,6 +19,16 @@ import * as jwt from "jsonwebtoken";
  * @param email:string         property-required
 */
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const dotenv = require('dotenv')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require("path")
+const envPath = path.resolve(__dirname, '..', '..', '..','config', 'dev.env');
+const result = dotenv.config({path : envPath})
+if (result.error) {
+    throw result.error;
+  }
+
 interface IStudent {
     name:string,
     email:string,
@@ -138,7 +148,7 @@ studentSchema.pre('save', async function (next) {
 
 studentSchema.methods.generateAuthToken = async function(){
     const student = this
-    const token = jwt.sign({_id : student._id.toString()}, "secreteJwtToken")
+    const token = jwt.sign({_id : student._id.toString()}, process.env.JWT_SECRET_CODE, {expiresIn : '1h'})
     student.tokens = student.tokens.concat({token})
     //console.log(`token of model ${token}`)
     await student.save()

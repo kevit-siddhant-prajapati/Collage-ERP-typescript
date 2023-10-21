@@ -1,6 +1,16 @@
 const jwt = require('jsonwebtoken')
 const Admin = require('../components/admins/admin.model')
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const dotenv = require('dotenv')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require("path")
+const envPath = path.resolve(__dirname, '..', '..','config', 'dev.env');
+const result = dotenv.config({path : envPath})
+if (result.error) {
+    throw result.error;
+  }
+
 export default async (req, res, next) => {
     try {
         //console.log("Admin authorization is call")
@@ -11,7 +21,7 @@ export default async (req, res, next) => {
         const tokenarr = token.split(' ')
     
         //verify Jsonweb token
-        const decoded = jwt.verify(tokenarr[1], "secreteJwtToken")
+        const decoded = jwt.verify(tokenarr[1], process.env.JWT_SECRET_CODE)
         if(!decoded){
             throw Error('do not verify token')
         }
@@ -30,4 +40,3 @@ export default async (req, res, next) => {
          res.status(401).send({error : 'Please Authenticate'})
     }
 }
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTJmYTY1Njc2Y2NlNjA5Y2M2ZTlmNmEiLCJpYXQiOjE2OTc3MjAxMTJ9.0lnvHH0Rb2wY2er2DOiJ0SKToQa6h7HrugjGyvIWqH8

@@ -28,8 +28,9 @@ class StudentRoute {
         this.router.post("/student/signup", staffAuth, this.studentController.postStudent)
         this.router.patch('/student/me/:id', staffAuth, this.studentController.updateStudent)
         this.router.delete('/student/me/:id', staffAuth, this.studentController.deleteStudent)
-        //this.router.patch('/students/attendance', staffAuth, this.studentController.fillAttendance)
         this.router.post('/student/login',this.studentController.studentLogin)
+        this.router.post('/student/logout', studentAuth,this.studentController.studentLogout)
+
     }
 }
 

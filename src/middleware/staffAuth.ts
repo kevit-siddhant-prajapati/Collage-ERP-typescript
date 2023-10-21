@@ -1,6 +1,17 @@
 const jwt = require('jsonwebtoken')
 const Staff = require('../components/staffs/staffs.model')
 import { staffsLogger } from "../components/staffs/staffs.logs"
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const dotenv = require('dotenv')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require("path")
+const envPath = path.resolve(__dirname, '..', '..','config', 'dev.env');
+const result = dotenv.config({path : envPath})
+if (result.error) {
+    throw result.error;
+  }
+
 export default async (req, res, next) => {
     try {
         console.log("Staff authorization is call")
@@ -11,7 +22,7 @@ export default async (req, res, next) => {
         const tokenarr = token.split(' ')
         console.log(tokenarr[1])
         //verify Jsonweb token
-        const decoded = jwt.verify(tokenarr[1], "secreteJwtToken")
+        const decoded = jwt.verify(tokenarr[1], process.env.JWT_SECRET_CODE)
         console.log(decoded)
         if(!decoded){
             staffsLogger.error(`Unable to verify token`)

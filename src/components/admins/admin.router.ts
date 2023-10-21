@@ -18,6 +18,7 @@ class AdminRoute {
     }
 
     initializeRoutes():void {
+        this.router.post('/admin/logout', adminAuth,this.adminController.adminLogout)
         this.router.post('/admin/signup', adminAuth, this.adminController.addAdmin)
         this.router.get('/admin/me', adminAuth, this.adminController.getAdminProfile)
         this.router.get('/admins', adminAuth, this.adminController.getAdmins)

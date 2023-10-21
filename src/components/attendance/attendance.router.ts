@@ -22,6 +22,8 @@ class AttendanceRoute {
         this.router.post('/staff/attendance', adminAuth, this.attendanceController.fillStaffAttendance)
         this.router.patch('/student/attendance/update/:id', staffAuth, this.attendanceController.manageStudentAttendance)
         this.router.patch('/staff/attendance/update/:id', adminAuth, this.attendanceController.manageStudentAttendance)
+        this.router.get('/students/getAttendance', adminAuth, this.attendanceController.getStudentsAttendance)
+        this.router.get('/staffs/getAttendance', adminAuth, this.attendanceController.getStaffsAttendance)
     }
 }
 

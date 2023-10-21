@@ -183,6 +183,37 @@ class AttendanceController {
             res.status(500).send({ error: 'Internal Server Error' });
         }
     }
+
+    async getStudentsAttendance(req:Request, res:Response){
+        try {
+            const attendance = await Attendance.find({roleOfUser : 'Student'})
+            if(!attendance){
+                studentsLogger.error('Given user not found')
+                return res.status(404).send('Not User found!')
+            }
+            studentsLogger.info('Fetching data of students')
+            res.status(200).send(attendance)
+        } catch(e){
+            studentsLogger.error('Internal server error , unable to get data')
+            return res.status(500).send({error : `Unable to get data with error : ${e}`})
+        }
+    }
+
+    async getStaffsAttendance(req:Request, res:Response){
+        try {
+            const attendance = await Attendance.find({roleOfUser : "Staff"})
+            //console.log(`this is staff ${attendance}`)
+            if(!attendance){
+                staffsLogger.error('Given user not found')
+                return res.status(404).send('Not User found!')
+            }
+            staffsLogger.info('Fetching data of students')
+            res.status(200).send(attendance)
+        } catch(e){
+            studentsLogger.error('Internal server error , unable to get data')
+            return res.status(500).send({error : `Unable to get data with error : ${e}`})
+        }
+    }
 }
 
 export default AttendanceController

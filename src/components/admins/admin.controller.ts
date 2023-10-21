@@ -136,6 +136,19 @@ class AdminController {
         return res.send({user: admin, token})
     }
 
+    async adminLogout(req, res:Response){
+        //console.log('admin controller is working')
+        try {
+            req.admin.tokens = req.admin.tokens.filter((token) => {
+                return token.token !== req.token
+            })
+            await req.admin.save()
+            res.send()
+        } catch (e) {
+            res.status(500).send()
+        }
+    }
+
 }
 
 export default AdminController

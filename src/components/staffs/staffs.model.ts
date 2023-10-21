@@ -16,11 +16,22 @@ import * as jwt from "jsonwebtoken"
  * @param email:string         property-required 
 */
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const dotenv = require('dotenv')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require("path")
+const envPath = path.resolve(__dirname, '..', '..', '..','config', 'dev.env');
+const result = dotenv.config({path : envPath})
+if (result.error) {
+    throw result.error;
+  }
+
 interface IStaff {
     name:string,
     email:string,
     password:string,
     phoneNumber:string,
+    department: string,
     attendance:number,
     tokens : Array<string>
 }
@@ -65,6 +76,16 @@ const staffSchema = new Schema<IStaff>({
             }
         }
     },
+    department: {
+        type: String,
+        require: true,
+        validate: function (value:string) {
+            const Branch = ['CE', 'ME', 'EC'];
+            if (!Branch.includes(value)) {
+                throw new Error('Branch must in CE, ME and EC');
+            }
+        }
+    },
     attendance : {
         type : Number,
         require : true
@@ -98,7 +119,7 @@ staffSchema.pre('save', async function(next){
 
 staffSchema.methods.generateAuthToken = async function(){
     const staff = this
-    const token = jwt.sign({_id : staff._id.toString()}, "secreteJwtToken")
+    const token = jwt.sign({_id : staff._id.toString()}, process.env.JWT_SECRET_CODE, {expiresIn : '1h'})
     staff.tokens = staff.tokens.concat({token})
     await staff.save()
     return token

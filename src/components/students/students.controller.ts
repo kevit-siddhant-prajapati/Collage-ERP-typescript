@@ -131,31 +131,18 @@ class StudentController {
         }
     }
 
-    /**
-     * @description below router is use for fill student attendence
-    */
-    async fillAttendance(req:Request, res:Response) {
+    async studentLogout(req, res:Response){
         try {
-            const attendStudent = req.body.attendance;
-    
-            for (const attendie of attendStudent) {
-                const student = await Student.findById(attendie);
-                if (student) {
-                    student.attendance += 1;
-                    await student.save();
-                    studentsLogger.info(`Attendance filled : ${student._id}`)
-                } else {
-                    studentsLogger.error(`Unable to fill attendance of requested students!`)
-                    return res.status(400).send()
-                }
-            }
-            studentsLogger.info(`data of student attendance updated`)
-            res.status(200).send({ message: 'Attendance updated successfully' });
-        } catch (error) {
-            studentsLogger.error('Internal server error!, unable to connect with application')
-            res.status(500).send({ error: 'Internal Server Error' });
+            req.student.tokens = req.student.tokens.filter((token) => {
+                return token.token !== req.token
+            })
+            await req.student.save()
+            res.send()
+        } catch (e) {
+            res.status(500).send()
         }
     }
+    
 
     async studentLogin(req:Request, res:Response){
         const student =  await Student.findByCredentials(req.body.email , req.body.password)

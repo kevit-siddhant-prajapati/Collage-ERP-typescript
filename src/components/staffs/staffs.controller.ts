@@ -70,7 +70,7 @@ class staffController {
     */
     async updateStaff(req:Request, res:Response){
         try {
-            const updatable = ['name', 'email', 'password', 'phoneNumber', 'attendance']
+            const updatable = ['name', 'email', 'password', 'phoneNumber', 'attendance', 'department']
             const updateStaff = Object.keys(req.body)
             const isValidUpdate = updateStaff.every(update => updatable.includes(update))
             if(!isValidUpdate){
@@ -128,6 +128,18 @@ class staffController {
         }
         const token = await staff.generateAuthToken()
         return res.send({user: staff, token})
+    }
+
+    async staffLogout(req, res:Response){
+        try {
+            req.staff.tokens = req.staff.tokens.filter((token) => {
+                return token.token !== req.token
+            })
+            await req.staff.save()
+            res.send()
+        } catch (e) {
+            res.status(500).send()
+        }
     }
 }
 

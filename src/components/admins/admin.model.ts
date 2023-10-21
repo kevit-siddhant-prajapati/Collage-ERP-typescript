@@ -8,6 +8,16 @@ const Schema = mongoose.Schema;
 import * as bcrypt from "bcrypt"
 import * as jwt from "jsonwebtoken"
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const dotenv = require('dotenv')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require("path")
+const envPath = path.resolve(__dirname, '..', '..', '..','config', 'dev.env');
+const result = dotenv.config({path : envPath})
+if (result.error) {
+    throw result.error;
+  }
+
 /** 
  * @description staffSchema that contain property
  * @param name:String   -contain name of the staff     property-required
@@ -94,7 +104,7 @@ adminSchema.statics.findByCredentials = async (email:string, password:string) =>
 
 adminSchema.methods.generateAuthToken = async function(){
     const admin = this
-    const token = jwt.sign({_id : admin._id.toString()}, "secreteJwtToken")
+    const token = jwt.sign({_id : admin._id.toString()}, process.env.JWT_SECRET_CODE, {expiresIn : '1h'})
     admin.tokens = admin.tokens.concat({token})
     await admin.save()
     return token
