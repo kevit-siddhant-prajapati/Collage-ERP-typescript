@@ -3,20 +3,12 @@
 */
 
 import * as mongoose from "mongoose"
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const validator = require("validator")
 const Schema = mongoose.Schema;
 import * as bcrypt from "bcrypt"
 import * as jwt from "jsonwebtoken"
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const dotenv = require('dotenv')
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const path = require("path")
-const envPath = path.resolve(__dirname, '..', '..', '..','config', 'dev.env');
-const result = dotenv.config({path : envPath})
-if (result.error) {
-    throw result.error;
-  }
 
 /** 
  * @description staffSchema that contain property
@@ -77,6 +69,7 @@ const adminSchema = new Schema<IAdmin>({
 
 
 adminSchema.pre('save', async function(next){
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const admin = this
     try {
         if(admin.isModified('password')){
@@ -84,6 +77,7 @@ adminSchema.pre('save', async function(next){
             admin.password = hashedpassword.toString()
         }
         next()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e:any){
         next(e);
     }
@@ -103,6 +97,7 @@ adminSchema.statics.findByCredentials = async (email:string, password:string) =>
   }
 
 adminSchema.methods.generateAuthToken = async function(){
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const admin = this
     const token = jwt.sign({_id : admin._id.toString()}, process.env.JWT_SECRET_CODE, {expiresIn : '1h'})
     admin.tokens = admin.tokens.concat({token})

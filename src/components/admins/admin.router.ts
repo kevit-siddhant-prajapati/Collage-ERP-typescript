@@ -30,4 +30,3 @@ class AdminRoute {
 
 export default new AdminRoute().router;
 
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTMwZDMwNDc0NWI4ODRlOWJiM2EzYmUiLCJpYXQiOjE2OTc3MTMyNTJ9.keLb6J4JmNwbjANbi_Yq_Vz8QIj6Hlsi45Xayyo-BME

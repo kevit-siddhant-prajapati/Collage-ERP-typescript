@@ -8,7 +8,7 @@ import { createLogger, format, transports, config } from 'winston';
  * @param transports {Array} - the property that are set while storing log
  * @param levels - set the level of current log
 */
-export let staffsLogger = createLogger({
+export const staffsLogger = createLogger({
     levels: config.syslog.levels,
     transports : [
         new transports.File({ 

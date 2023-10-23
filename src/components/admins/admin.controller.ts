@@ -126,14 +126,20 @@ class AdminController {
     }
 
     async adminLogin(req:Request, res:Response){
-        console.log('Staff login is call')
-        const admin =  await Admin.findByCredentials(req.body.email , req.body.password)
-        console.log(admin)
-        if(!admin){
-            throw new Error('Invalid username or password')
+        try {
+            console.log('Staff login is call')
+            const admin =  await Admin.findByCredentials(req.body.email , req.body.password)
+            console.log(admin)
+            if(!admin){
+                //throw new Error('Invalid username or password')
+                return res.status(400).send('Invalid username or password')
+            }
+            const token = await admin.generateAuthToken()
+            res.send({user: admin, token})
+        } catch(e){
+            return res.status(500).send(`Internal Server Error : ${e}`)
         }
-        const token = await admin.generateAuthToken()
-        return res.send({user: admin, token})
+        
     }
 
     async adminLogout(req, res:Response){

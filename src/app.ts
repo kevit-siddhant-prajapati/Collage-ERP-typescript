@@ -1,13 +1,13 @@
 import * as express from 'express'
-const dotenv = require('dotenv')
-const path = require('path')
+//const dotenv = require('dotenv')
+//const path = require('path')
 //require('./src/db/mongoose')
 
-const envPath = path.resolve(__dirname, '..','config', 'dev.env');
-const result = dotenv.config({path : envPath})
-if (result.error) {
-    throw result.error;
-  }
+// const envPath = path.resolve(__dirname, '..','config', 'dev.env');
+// const result = dotenv.config({path : envPath})
+// if (result.error) {
+//     throw result.error;
+//   }
 const app:express.Application = express()
 const PORT = process.env.PORT;
 
@@ -26,3 +26,4 @@ app.use(attendanceRouter)
 app.listen(PORT, ()=> {
     console.log('Server is running on port ', PORT)
 })
+module.exports = app

@@ -1,7 +1,9 @@
 import { Request, Response} from "express";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const Student = require('./students.model');
 import {studentsLogger} from "./students.logs"
-const studentAuth = require('../../middleware/studentAuth')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const Attendance = require('../attendance/attendance.model')
 
 class StudentController {
     /**
@@ -116,13 +118,12 @@ class StudentController {
     async deleteStudent(req:Request, res:Response){
         try {
             const student = await Student.findById(req.params.id)
-            console.log(req.params.id)
-            console.log(student)
             if(!student){
                 studentsLogger.error(`Requested student not found`)
                 return res.status(404).send('Given Student is not exist.')
             }
-            await Student.deleteOne({_id : student._id})
+            await Student.deleteOne({_id : student._id}) // delete student using url parameter
+            await Attendance.deleteMany({userId : student._id}) // delete the attendendance that belongs to perticular student
             studentsLogger.info(`Student is deleted ${student._id}`)
             res.status(200).send(student)
         } catch ( e ){
@@ -131,6 +132,11 @@ class StudentController {
         }
     }
 
+
+    /**
+     * @description below studentLogout call when student logout from the system
+     * req.student - it is the data of authorize student
+    */
     async studentLogout(req, res:Response){
         try {
             req.student.tokens = req.student.tokens.filter((token) => {
@@ -144,13 +150,24 @@ class StudentController {
     }
     
 
+    /**
+     * 
+     * @param req - the request coming from student authentication
+     * @param res - the responce give back to the browser
+     * @returns either student data or error
+     */
     async studentLogin(req:Request, res:Response){
-        const student =  await Student.findByCredentials(req.body.email , req.body.password)
+        try {
+            const student =  await Student.findByCredentials(req.body.email , req.body.password)
         if(!student){
-            throw new Error('Invalid username or password')
+            //throw new Error('Invalid username or password')
+            return res.status(400).send('Invalid username or password')
         }
         const token = await student.generateAuthToken()
         return res.send({user: student.getPublicProfile(), token})
+        } catch (e){
+            res.status(500).send({error : `Internal Server Error : ${e}`})
+        }
     }
 
     /**
@@ -161,6 +178,8 @@ class StudentController {
    async studentGroupByYear(req:Request, res:Response){
     try {
         const student = await Student.aggregate([
+            // this pipe group the data according to batch the after year
+            //totalStudent count the number of student according to year
             {
               $group: {
                 _id: {
@@ -170,6 +189,9 @@ class StudentController {
                 totalStudents: { $sum: 1 }
               }
             },
+            //grouping the student further department
+            // here k - nameOfDepartment
+            // v- total numberOfStudent per department
             {
               $group: {
                 _id: "$_id.year",
@@ -182,6 +204,7 @@ class StudentController {
                 }
               }
             },
+            //print only year , totalStudent per year and array of department
             {
               $project: {
                 _id: 0,

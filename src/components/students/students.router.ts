@@ -8,7 +8,6 @@ import StudentController from "./students.controller";
 require('../../../bin/database')
 import studentAuth from '../../middleware/studentAuth';
 import staffAuth from "../../middleware/staffAuth";
-//import userAuth from "../../middleware/userAuth";
 import adminAuth from "../../middleware/adminAuth";
 
 class StudentRoute {
@@ -21,17 +20,18 @@ class StudentRoute {
         this.router = Router();
         this.initializeRoutes();
     }
-
-    initializeRoutes(): void {
-        this.router.get("/students", studentAuth , this.studentController.getStudent);
-        this.router.get("/student/me", studentAuth, this.studentController.getStudentProfile)
-        this.router.post("/student/signup", staffAuth, this.studentController.postStudent)
-        this.router.patch('/student/me/:id', staffAuth, this.studentController.updateStudent)
-        this.router.delete('/student/me/:id', staffAuth, this.studentController.deleteStudent)
-        this.router.post('/student/login',this.studentController.studentLogin)
-        this.router.post('/student/logout', studentAuth,this.studentController.studentLogout)
-        this.router.get('/studentGroupByYear/analysis1', adminAuth, this.studentController.studentGroupByYear)
-        
+/**
+ * @description below route joint route with different methods of controller
+ */
+initializeRoutes(): void {
+        this.router.get("/students", studentAuth , this.studentController.getStudent); //getting data of all student
+        this.router.get("/student/me", studentAuth, this.studentController.getStudentProfile) //getting data of authnticate student
+        this.router.post("/student/signup", staffAuth, this.studentController.postStudent)  // create new student
+        this.router.patch('/student/me/:id', staffAuth, this.studentController.updateStudent)  //update student using studentId
+        this.router.delete('/student/me/:id', staffAuth, this.studentController.deleteStudent) //delete student using Id as well as releted attendance
+        this.router.post('/student/login',this.studentController.studentLogin) // for login student
+        this.router.post('/student/logout', studentAuth,this.studentController.studentLogout) //logout student 
+        this.router.get('/studentGroupByYear/analysis1', adminAuth, this.studentController.studentGroupByYear) // analysis1
     }
 }
 
