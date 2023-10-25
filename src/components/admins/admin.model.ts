@@ -3,9 +3,12 @@
 */
 
 import * as mongoose from "mongoose"
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const validator = require("validator")
 const Schema = mongoose.Schema;
 import * as bcrypt from "bcrypt"
+import * as jwt from "jsonwebtoken"
+
 
 /** 
  * @description staffSchema that contain property
@@ -15,7 +18,15 @@ import * as bcrypt from "bcrypt"
  * @param attendence:number value-total number of attendence         
  * @param email:string         property-required 
 */
-const adminSchema = new Schema({
+
+interface IAdmin{
+    name:string,
+    email:string,
+    password:string,
+    tokens : Array<string>
+}
+
+const adminSchema = new Schema<IAdmin>({
     name : {
         type : String,
         required: true,
@@ -47,17 +58,18 @@ const adminSchema = new Schema({
             }
         }
     },
-    phoneNumber : {
-        type : String,
-        validate(value:string){
-            if(value.length != 10){
-                throw new Error('Please insert right phoneNumber')
-            }
+    tokens : [{
+        token : {
+            type : String,
+            required : true
         }
-    }
+    }]
 })
 
+
+
 adminSchema.pre('save', async function(next){
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const admin = this
     try {
         if(admin.isModified('password')){
@@ -65,10 +77,33 @@ adminSchema.pre('save', async function(next){
             admin.password = hashedpassword.toString()
         }
         next()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e:any){
         next(e);
     }
 })
 
-const Admin = mongoose.model('Admin', adminSchema);
+adminSchema.statics.findByCredentials = async (email:string, password:string) => {
+    const admin = await Admin.findOne({email})
+    //console.log(`email : ${email} & password : ${password}`)
+    if(!admin){
+        throw new Error('Unable to login')
+    }
+    const isMatch = await bcrypt.compare(password, admin.password)
+    if(!isMatch){
+        throw new Error('Password is incorrect')
+    }
+    return admin
+  }
+
+adminSchema.methods.generateAuthToken = async function(){
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const admin = this
+    const token = jwt.sign({_id : admin._id.toString()}, process.env.JWT_SECRET_CODE, {expiresIn : '1h'})
+    admin.tokens = admin.tokens.concat({token})
+    await admin.save()
+    return token
+}
+
+const Admin = mongoose.model<IAdmin>('Admin', adminSchema);
 module.exports = Admin;

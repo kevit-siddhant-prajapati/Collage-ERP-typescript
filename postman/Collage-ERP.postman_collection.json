@@ -1,0 +1,814 @@
+{
+	"info": {
+		"_postman_id": "de6d8871-0093-4d9f-82d1-f77b74f32882",
+		"name": "Collage-ERP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29652000"
+	},
+	"item": [
+		{
+			"name": "Students",
+			"item": [
+				{
+					"name": "create Student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.code === 201){",
+									"    pm.environment.set(\"authToken\", pm.response.json().token)",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"Mayank\",\n    \"email\" : \"mayank@example.com\",\n    \"currentSem\" : 1,\n    \"password\" : \"Mayank@12\",\n    \"phoneNumber\" : 8864000809,\n    \"batch\" : 2022,\n    \"attendance\" : 302\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/student/signup",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"student",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login Student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.code === 200){",
+									"    pm.environment.set(\"authToken\", pm.response.json().token)",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"ram@example.com\",\n    \"password\" : \"Ram@12345\",\n    \"role\" : \"Student\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/student/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"student",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "fill Student Attendance",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"date\" : \"2018-06-18\",\n    \"attendance\" : [\n        \"652fbf66e6e93558dd4870ac\",\n        \"6530d304745b884e9bb3a3be\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/student/attendance",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"student",
+								"attendance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout Student",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/student/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"student",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find Students",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/students",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "student profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/student/me",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"student",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Students Attendance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/students/getAttendance",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"students",
+								"getAttendance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Student",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phoneNumber\" : 5389219801\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/student/me/6532033b5555196131658bc6",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"student",
+								"me",
+								"6532033b5555196131658bc6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "manage Student Attendance",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\" : false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/student/attendance/update/653234b5fd691f945569f22e",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"student",
+								"attendance",
+								"update",
+								"653234b5fd691f945569f22e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete Student",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/student/me/652fa65676cce609cc6e9f6a",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"student",
+								"me",
+								"652fa65676cce609cc6e9f6a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Staffs",
+			"item": [
+				{
+					"name": "create Staff",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.code === 201){",
+									"    pm.environment.set(\"authToken\", pm.response.json().token)",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Karna\",\n    \"email\": \"karna@example.com\",\n    \"password\": \"Karna@123\",\n    \"phoneNumber\": \"9658204749\",\n    \"attendance\": 135\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/staff/signup",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"staff",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login Staff",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.code === 200){",
+									"    pm.environment.set(\"authToken\", pm.response.json().token)",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"karna@example.com\",\n    \"password\" : \"Karna@123\",\n    \"role\" : \"Staff\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/staff/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"staff",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "fill staff Attendance",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"date\" : \"2018-06-22\",\n    \"attendance\" : [\n        \"65311f7616129602c3d0fbf7\",\n        \"653117cde91b1125abd05fce\",\n        \"652fab9921810c1ecd316cbf\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/staff/attendance",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"staff",
+								"attendance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout Staff",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/staff/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"staff",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find Staffs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/staffs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"staffs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Staff profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/staff/me",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"staff",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Staffs attendance",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/staffs/getAttendance",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"staffs",
+								"getAttendance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Staff",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\" : \"Arjun@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/staff/me/652fbeeae6e93558dd4870a2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"staff",
+								"me",
+								"652fbeeae6e93558dd4870a2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "manage staff attendance",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\" : false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/staff/attendance/update/653231c15411dd2936c3a879",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"staff",
+								"attendance",
+								"update",
+								"653231c15411dd2936c3a879"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Staff",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/staff/me/652fbeeae6e93558dd4870a2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"staff",
+								"me",
+								"652fbeeae6e93558dd4870a2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Admin signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.code === 201){",
+									"    pm.environment.set(\"authToken\", pm.response.json().token)",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"Rajeev\",\n    \"email\" : \"rajeev@admin.com\",\n    \"password\" : \"Rajeev@1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/admin/signup",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.code === 200){",
+									"    pm.environment.set(\"authToken\", pm.response.json().token)",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"satyam@admin.com\",\n    \"password\" : \"Satyam@12\",\n    \"role\" : \"Admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/admin/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/admin/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all admins",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/admins",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admins"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/admin/me",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update Admin",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\" : \"Satyam@12\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/admin/me/652fbe79e6e93558dd48709a",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"me",
+								"652fbe79e6e93558dd48709a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete Admin",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/admin/me/652fabb121810c1ecd316cc3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"me",
+								"652fabb121810c1ecd316cc3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Analysis",
+			"item": [
+				{
+					"name": "Analysis1:Student Group by Year then department",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Analysis2:  Get all absent student of date",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Analysis3: get Student attendance less ten 75%",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Analysis4: Student intake analysis",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
