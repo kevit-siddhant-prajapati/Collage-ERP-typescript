@@ -7,16 +7,13 @@ import { staffsLogger } from "../components/staffs/staffs.logs"
 
 export default async (req, res, next) => {
     try {
-        console.log("Staff authorization is call")
         //below line request the authorization field from header , this will use to get token
         const token = req.header('Authorization')
         
         //Split the Bearer keyword from token
         const tokenarr = token.split(' ')
-        console.log(tokenarr[1])
         //verify Jsonweb token
         const decoded = jwt.verify(tokenarr[1], process.env.JWT_SECRET_CODE)
-        console.log(decoded)
         if(!decoded){
             staffsLogger.error(`Unable to verify token`)
             throw Error('do not verify token')

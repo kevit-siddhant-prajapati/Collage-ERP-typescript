@@ -15,7 +15,6 @@ class staffController {
         try {
             // Validate request data here if needed
             const newStaff = new Staff(req.body);
-            console.log('This is status of student',newStaff)
             try{
                 await newStaff.save()
             }catch(e){
@@ -113,8 +112,6 @@ class staffController {
     async deleteStaff(req:Request, res:Response){
         try {
             const staff = await Staff.findById(req.params.id)
-            console.log(req.params.id)
-            console.log(staff)
             if(!staff){
                 staffsLogger.error(`Unable to Find Staff of id : ${req.params.id}`)
                 return res.status(404).send('Given Student is not exist.')
@@ -139,11 +136,8 @@ class staffController {
      */
     async staffLogin(req:Request, res:Response){
         try {
-            console.log('Staff login is call')
             const staff =  await Staff.findByCredentials(req.body.email , req.body.password)
-            console.log(staff)
             if(!staff){
-                //throw new Error('Invalid username or password')
                 return res.status(500).send(`'Invalid username or password'`)
             }
             const token = await staff.generateAuthToken()

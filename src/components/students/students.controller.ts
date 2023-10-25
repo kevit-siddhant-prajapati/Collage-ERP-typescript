@@ -11,7 +11,6 @@ class StudentController {
     */
     async getStudent(req:Request, res:Response){
         try {
-            console.log("This is running")
             const student = await Student.find({})
             if(!student){
                 studentsLogger.error(`Unable to get data of all students`)
@@ -60,8 +59,6 @@ class StudentController {
             //console.log(token)
             const student = await Student.find({'tokens.token':token},{password : 0 , tokens : 0})
             const authenticatedStudent = student;
-
-            console.log(authenticatedStudent); // Print authenticated student data
 
             // You may want to use the authenticated student data to retrieve the profile
             // For example, if the student ID is in authenticatedStudent._id
@@ -160,7 +157,6 @@ class StudentController {
         try {
             const student =  await Student.findByCredentials(req.body.email , req.body.password)
         if(!student){
-            //throw new Error('Invalid username or password')
             return res.status(400).send('Invalid username or password')
         }
         const token = await student.generateAuthToken()
@@ -225,8 +221,6 @@ class StudentController {
         res.status(500).send('Internal Server Error!')
     }
    }
-
-   
 }
 
 export default StudentController

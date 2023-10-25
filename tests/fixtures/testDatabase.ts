@@ -7,7 +7,7 @@ const Staff = require('../../src/components/staffs/staffs.model')
 const Admin = require('../../src/components/admins/admin.model')
 const secret = process.env.JWT_SECRET_CODE || 'secreteJwtToken'
 const jwt = require('jsonwebtoken')
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 const Attendance = require('../../src/components/attendance/attendance.model')
 
 const studentOneId = new mongoose.Types.ObjectId()

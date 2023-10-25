@@ -108,8 +108,6 @@ class AdminController {
     async deleteAdmin(req:Request, res:Response){
         try {
             const admin = await Admin.findById(req.params.id)
-            console.log(req.params.id)
-            console.log(admin)
             if(!admin){
                 adminLogger.error(`Given admin not exit adminId : ${req.params.id}`)
                 return res.status(404).send('Given Student is not exist.')
@@ -127,19 +125,15 @@ class AdminController {
 
     async adminLogin(req:Request, res:Response){
         try {
-            console.log('Staff login is call')
             const admin =  await Admin.findByCredentials(req.body.email , req.body.password)
-            console.log(admin)
             if(!admin){
-                //throw new Error('Invalid username or password')
                 return res.status(400).send('Invalid username or password')
             }
             const token = await admin.generateAuthToken()
             res.send({user: admin, token})
         } catch(e){
             return res.status(500).send(`Internal Server Error : ${e}`)
-        }
-        
+        } 
     }
 
     async adminLogout(req, res:Response){

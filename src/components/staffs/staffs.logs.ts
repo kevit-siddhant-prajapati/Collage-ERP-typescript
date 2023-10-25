@@ -2,12 +2,14 @@
  * This file is responsible for generate log of staffs with different operation
 */
 import { createLogger, format, transports, config } from 'winston';
-
+import logger from '../winston-config';
 /**
  * @description below given method method set different property of logs
  * @param transports {Array} - the property that are set while storing log
  * @param levels - set the level of current log
 */
+
+logger.info('Working in development environment');
 export const staffsLogger = createLogger({
     levels: config.syslog.levels,
     transports : [

@@ -115,12 +115,6 @@ const studentSchema = new Schema<IStudent>({
     }
     );
 
-    // studentSchema.virtual('attendance', {
-    //     ref : Attendance,
-    //     localField : '_id',
-    //     foreignField : 'userId'
-    //   }) 
-
     /**
      * @description below method is act as a middleware is call before student is save
      * it contain data of student that we want to save
