@@ -17,6 +17,9 @@ class AdminRoute {
         this.initializeRoutes()
     }
 
+    /**
+     * @description : adding some extra routes for admin
+    */
     initializeRoutes():void {
         this.router.post('/admin/logout', adminAuth,this.adminController.adminLogout)
         this.router.post('/admin/signup', adminAuth, this.adminController.addAdmin)
