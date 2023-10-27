@@ -31,7 +31,7 @@ initializeRoutes(): void {
         this.router.delete('/student/me/:id', staffAuth, this.studentController.deleteStudent) //delete student using Id as well as releted attendance
         this.router.post('/student/login',this.studentController.studentLogin) // for login student
         this.router.post('/student/logout', studentAuth,this.studentController.studentLogout) //logout student 
-        this.router.get('/studentGroupByYear/analysis1', adminAuth, this.studentController.studentGroupByYear) // analysis1
+        this.router.get('/student-group-by-year/analysis1', adminAuth, this.studentController.studentGroupByYear) // analysis1
     }
 }
 
