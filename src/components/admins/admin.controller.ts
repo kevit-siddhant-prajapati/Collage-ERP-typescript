@@ -1,7 +1,7 @@
 import { Request, Response} from "express"
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Admin = require('./admin.model');
-import {adminLogger} from "./admin.logs"
+import {adminLogger} from "../logger"
 
 
 class AdminController {

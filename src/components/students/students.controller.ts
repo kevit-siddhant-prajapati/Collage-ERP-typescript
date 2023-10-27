@@ -1,7 +1,7 @@
 import { Request, Response} from "express";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Student = require('./students.model');
-import {studentsLogger} from "./students.logs"
+import {studentsLogger} from "../logger"
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Attendance = require('../attendance/attendance.model')
 

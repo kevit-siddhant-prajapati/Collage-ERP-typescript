@@ -24,11 +24,11 @@ initializeRoutes():void {
         this.router.post('/staff/attendance', adminAuth, this.attendanceController.fillStaffAttendance) // fill attendance of staff
         this.router.patch('/student/attendance/update/:id', staffAuth, this.attendanceController.manageStudentAttendance) // change attendance of student with id
         this.router.patch('/staff/attendance/update/:id', adminAuth, this.attendanceController.manageStudentAttendance) // change attendance of staff using id
-        this.router.get('/students/getAttendance', adminAuth, this.attendanceController.getStudentsAttendance) // get attendance of all student
-        this.router.get('/staffs/getAttendance', adminAuth, this.attendanceController.getStaffsAttendance) // get attendance of all staff
-        this.router.post('/studentAttendanceByDate', adminAuth, this.attendanceController.getAbsentStudent) // analysis2
-        this.router.post('/studentWithLessAttendance/analysis3', adminAuth, this.attendanceController.studentLessAttendance) // analysis3
-        this.router.post('/studentIntakeAnalysis', adminAuth, this.attendanceController.studentIntakeAnalysis) // analysis4
+        this.router.get('/students/get-attendance', adminAuth, this.attendanceController.getStudentsAttendance) // get attendance of all student
+        this.router.get('/staffs/get-attendance', adminAuth, this.attendanceController.getStaffsAttendance) // get attendance of all staff
+        this.router.post('/student-attendance-by-date', adminAuth, this.attendanceController.getAbsentStudent) // analysis2
+        this.router.post('/student-with-less-attendance/analysis3', adminAuth, this.attendanceController.studentLessAttendance) // analysis3
+        this.router.post('/student-intake-analysis', adminAuth, this.attendanceController.studentIntakeAnalysis) // analysis4
     }
 }
 

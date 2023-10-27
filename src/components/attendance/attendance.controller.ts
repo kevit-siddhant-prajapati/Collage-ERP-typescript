@@ -2,8 +2,7 @@
 import { Request, Response } from "express";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Attendance = require('./attendance.model')
-import { staffsLogger } from "../staffs/staffs.logs";
-import { studentsLogger } from "../students/students.logs";
+import { staffsLogger , studentsLogger} from "../logger";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Student = require('../students/students.model')
 // eslint-disable-next-line @typescript-eslint/no-var-requires
