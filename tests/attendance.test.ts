@@ -65,7 +65,7 @@ test('Unauthorize user Should not fill attendance of student', async () => {
 
 test('Authorize User show data of students', async () => {
     await request(app)
-    .get('/students/getAttendance')
+    .get('/students/get-attendance')
     .set('Authorization', `Bearer ${adminOne.tokens[0].token}`)
     .send()
     .expect(200)
@@ -75,7 +75,7 @@ test('Authorize User show data of students', async () => {
 
 test('Unauthorize User should not show data of students', async () => {
     await request(app)
-    .get('/students/getAttendance')
+    .get('/students/get-attendance')
     .send()
     .expect(401)
 })
@@ -157,7 +157,7 @@ test('Unauthorize user Should not fill attendance of student', async () => {
 
 test('Authorize User show data of staffs', async () => {
     await request(app)
-    .get('/staffs/getAttendance')
+    .get('/staffs/get-attendance')
     .set('Authorization', `Bearer ${adminOne.tokens[0].token}`)
     .send()
     .expect(200)
@@ -167,7 +167,7 @@ test('Authorize User show data of staffs', async () => {
 
 test('Unauthorize User should not show data of staffs', async () => {
     await request(app)
-    .get('/staffs/getAttendance')
+    .get('/staffs/get-attendance')
     .send()
     .expect(401)
 })

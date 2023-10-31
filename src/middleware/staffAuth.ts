@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken')
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Staff = require('../components/staffs/staffs.model')
-import { staffsLogger } from "../components/staffs/staffs.logs"
+import { staffsLogger } from "../components/logger"
 
 /**
  * @description this staffAuth do authentication of staff
